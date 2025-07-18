@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>LINE 預約系統</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+  <h2>LINE 預約系統</h2>
+  <div id="userInfo">登入中...</div>
+
+  <form id="bookingForm" style="margin-top: 20px;">
+    <label>預約日期：<input type="date" name="date" required></label><br><br>
+    <label>預約時間：<input type="time" name="time" required></label><br><br>
+    <label>備註（非必填）：<br><textarea name="remark" rows="3" cols="30"></textarea></label><br><br>
+    <input type="submit" value="送出預約">
+  </form>
+
+  <div id="resultMsg" style="margin-top: 20px;"></div>
+
+  <script>
+    const liffId = "2007778847-4d7bwNEV"; // 你的 LIFF ID
+
+    let profileData = {};
+
+    async function main() {
+      await liff.init({ liffId });
+      if (!liff.isLoggedIn()) {
+        liff.login();
+      } else {
+        const profile = await liff.getProfile();
+        document.getElementById("userInfo").innerHTML = `👤 您好，${profile.displayName}`;
+        profileData = {
+          name: profile.displayName,
+          userId: profile.userId
+        };
+      }
+    }
+
+    document.getElementById("bookingForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const data = {
+        ...profileData,
+        date: form.get("date"),
+        time: form.get("time"),
+        remark: form.get("remark") || ""
+      };
+
+      const response = await fetch("你的 GAS Web App URL", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        document.getElementById("resultMsg").innerText = "✅ 預約成功！請留意通知訊息。";
+        e.target.reset();
+      } else {
+        document.getElementById("resultMsg").innerText = "❌ 預約失敗，請稍後再試。";
+      }
+    });
+
+    main();
+  </script>
+</body>
+</html>
