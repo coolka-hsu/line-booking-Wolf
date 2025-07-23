@@ -2,66 +2,125 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>LINE 預約系統</title>
+  <title>LINE 定位系統</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
+    input, select, textarea { width: 100%; padding: 8px; margin-top: 8px; }
+    .hidden { display: none; }
+    .form-group { margin-bottom: 16px; }
+    button { padding: 10px 20px; background: #28a745; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+    #timeOptions button { display: block; margin: 5px 0; width: 100%; }
+  </style>
 </head>
 <body>
-  <h2>LINE 預約系統</h2>
-  <div id="userInfo">登入中...</div>
+  <h2>📅 請選擇想要預約的時間</h2>
+  <div id="timeOptions">載入中...</div>
 
-  <form id="bookingForm" style="margin-top: 20px;">
-    <label>預約日期：<input type="date" name="date" required></label><br><br>
-    <label>預約時間：<input type="time" name="time" required></label><br><br>
-    <label>備註（非必填）：<br><textarea name="remark" rows="3" cols="30"></textarea></label><br><br>
-    <input type="submit" value="送出預約">
+  <form id="bookingForm" class="hidden">
+    <h3>請填寫以下資訊</h3>
+    <div class="form-group">
+      <label>用餐日期</label>
+      <input type="text" name="date" readonly>
+    </div>
+    <div class="form-group">
+      <label>用餐時段</label>
+      <input type="text" name="time" readonly>
+    </div>
+    <div class="form-group">
+      <label>訂位大名</label>
+      <input type="text" name="display_name" placeholder="請填寫您的姓名">
+    </div>
+    <div class="form-group">
+      <label>Line社群ID</label>
+      <input type="text" name="line_name" placeholder="請填寫您在社群中的名稱">
+    </div>
+    <div class="form-group">
+      <label>手機號碼</label>
+      <input type="tel" name="phone" placeholder="請填寫正確號碼，避免無法聯繫">
+    </div>
+    <div class="form-group">
+      <label>用餐人數</label>
+      <select name="adults">
+        <option value="">大人 (0)</option>
+        ${[...Array(11).keys()].map(i => `<option value="${i}">大人 (${i})</option>`).join('')}
+      </select>
+      <select name="children">
+        <option value="">小朋友 (0)</option>
+        ${[...Array(11).keys()].map(i => `<option value="${i}">小朋友 (${i})</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-group">
+      <label>備註</label>
+      <textarea name="note" placeholder="若有小朋友請註記年齡"></textarea>
+    </div>
+    <button type="submit">送出預約</button>
   </form>
 
   <div id="resultMsg" style="margin-top: 20px;"></div>
 
   <script>
     const liffId = "2007778847-4d7bwNEV"; // 你的 LIFF ID
+    let profile = {};
+    let selected = {};
 
-    let profileData = {};
-
-    async function main() {
+    async function init() {
       await liff.init({ liffId });
-      if (!liff.isLoggedIn()) {
-        liff.login();
-      } else {
-        const profile = await liff.getProfile();
-        document.getElementById("userInfo").innerHTML = `👤 您好，${profile.displayName}`;
-        profileData = {
-          name: profile.displayName,
-          userId: profile.userId
+      if (!liff.isLoggedIn()) liff.login();
+      profile = await liff.getProfile();
+
+      // 取得可訂時段
+      const res = await fetch("https://script.google.com/macros/s/AKfycbzFfLFp1nUe75gAAPirzMcH6AaDpHgpI2H90nk518jfZzOQg1k7FZgGSJ0Ob-Il9nOa8A/exec");
+      const times = await res.json();
+      const container = document.getElementById("timeOptions");
+      container.innerHTML = "";
+
+      times.forEach(t => {
+        const btn = document.createElement("button");
+        btn.textContent = `${t.date} ${t.time}`;
+        btn.onclick = () => {
+          selected = t;
+          document.querySelector('input[name="date"]').value = t.date;
+          document.querySelector('input[name="time"]').value = t.time;
+          document.getElementById("bookingForm").classList.remove("hidden");
+          window.scrollTo(0, document.body.scrollHeight);
         };
-      }
+        container.appendChild(btn);
+      });
     }
 
     document.getElementById("bookingForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const form = new FormData(e.target);
       const data = {
-        ...profileData,
-        date: form.get("date"),
-        time: form.get("time"),
-        remark: form.get("remark") || ""
+        liff_uid: profile.userId,
+        liff_name: profile.displayName,
+        display_name: form.get("display_name"),
+        line_name: form.get("line_name"),
+        phone: form.get("phone"),
+        adults: form.get("adults"),
+        children: form.get("children"),
+        note: form.get("note"),
+        date: selected.date,
+        time: selected.time,
+        index: selected.index
       };
 
-      const response = await fetch("你的 GAS Web App URL", {
+      const res = await fetch("https://script.google.com/macros/s/AKfycbzFfLFp1nUe75gAAPirzMcH6AaDpHgpI2H90nk518jfZzOQg1k7FZgGSJ0Ob-Il9nOa8A/exec", {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify(data)
       });
 
-      if (response.ok) {
-        document.getElementById("resultMsg").innerText = "✅ 預約成功！請留意通知訊息。";
+      const result = await res.json();
+      document.getElementById("resultMsg").textContent = result.message;
+      if (result.success) {
         e.target.reset();
-      } else {
-        document.getElementById("resultMsg").innerText = "❌ 預約失敗，請稍後再試。";
+        document.getElementById("bookingForm").classList.add("hidden");
       }
     });
 
-    main();
+    init();
   </script>
 </body>
 </html>
