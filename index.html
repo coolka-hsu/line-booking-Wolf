@@ -154,10 +154,10 @@
 
       const result = await res.json();
       document.getElementById("resultMsg").textContent = result.message;
-      if (result.success) {
-        e.target.reset();
-        document.getElementById("bookingForm").classList.add("hidden");
-      }
+     if (result.success) {
+      window.location.href = "https://coolka-hsu.github.io/line-booking-Wolf/success.html";
+    }
+
     });
 
     init();
