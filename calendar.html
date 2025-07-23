@@ -33,6 +33,11 @@
       display: block;
       margin-bottom: 0.5rem;
     }
+    .entry .meta {
+      font-size: 0.95rem;
+      color: #555;
+      margin-top: 0.25rem;
+    }
     .link-area {
       margin-top: 1rem;
       font-size: 1.1rem;
@@ -68,7 +73,11 @@
       data.forEach(entry => {
         const div = document.createElement("div");
         div.className = "entry";
-        div.innerHTML = `<strong>📆 ${entry.date} ${entry.time}</strong>`;
+        div.innerHTML = `
+          <strong>📆 ${entry.date} ${entry.time}</strong>
+          <div class="meta">🙍‍♂️ ${entry.line_name || '未提供'}</div>
+          <div class="meta">📱 手機尾碼：${entry.phone_last3 || '---'}</div>
+        `;
         calendar.appendChild(div);
       });
     }
