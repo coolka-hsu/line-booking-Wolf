@@ -12,7 +12,7 @@
       color: #333;
       padding: 2rem;
     }
-    h1 {
+    h1, h2 {
       text-align: center;
       color: #2c3e50;
     }
@@ -49,17 +49,81 @@
       font-size: 0.9rem;
       color: #555;
     }
+    .lookup {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      margin-top: 3rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .lookup label {
+      font-weight: bold;
+      display: block;
+      margin-top: 1rem;
+    }
+    .lookup input, .lookup select {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.3rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .lookup button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.8rem;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .result, .error {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      padding: 1rem;
+      border-radius: 6px;
+    }
+    .result {
+      background-color: #ecf9f1;
+      border-left: 4px solid #27ae60;
+    }
+    .error {
+      background-color: #ffe6e6;
+      border-left: 4px solid #e74c3c;
+      color: #c0392b;
+    }
   </style>
 </head>
 <body>
   <h1>📅 已訂位紀錄日曆</h1>
   <div class="calendar" id="calendar"></div>
 
+  <h2>🔎 查詢我的訂位</h2>
+  <div class="lookup">
+    <label for="datetime">選擇訂位時段</label>
+    <select id="datetime"></select>
+
+    <label for="phone">輸入您的手機號碼</label>
+    <input type="tel" id="phone" placeholder="請輸入完整手機號碼">
+
+    <button onclick="lookupBooking()">查詢</button>
+    <div id="lookup-result"></div>
+  </div>
+
   <script>
+    let allData = [];
+
     async function loadData() {
       const res = await fetch('https://coolka-hsu.github.io/line-booking-Wolf/booked.json');
       const data = await res.json();
+      allData = data;
 
+      // 產生日曆顯示
       const grouped = {};
       data.forEach(entry => {
         const key = `${entry.date}`;
@@ -86,6 +150,39 @@
 
         container.appendChild(box);
       });
+
+      // 產生查詢下拉選單
+      const timeSelect = document.getElementById('datetime');
+      const options = [...new Set(data.map(d => `${d.date}　${d.time}`))];
+      options.sort().forEach(opt => {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt;
+        timeSelect.appendChild(option);
+      });
+    }
+
+    function lookupBooking() {
+      const datetime = document.getElementById('datetime').value;
+      const phone = document.getElementById('phone').value.trim();
+      const [date, time] = datetime.split('　');
+      const result = allData.find(d => d.date === date && d.time === time && phone.endsWith(d.phone_last3));
+
+      const display = document.getElementById('lookup-result');
+      display.innerHTML = '';
+      if (result && phone.slice(-3) === result.phone_last3) {
+        display.className = 'result';
+        display.innerHTML = `
+          ✅ 訂位成功：<br>
+          📅 日期：<strong>${result.date}</strong><br>
+          🕐 時段：<strong>${result.time}</strong><br>
+          🙍‍♂️ LINE 名稱：<strong>${result.line_name}</strong><br>
+          📱 手機末三碼：<strong>${result.phone_last3}</strong>
+        `;
+      } else {
+        display.className = 'error';
+        display.textContent = '查無資訊或填寫電話錯誤。';
+      }
     }
 
     loadData();
