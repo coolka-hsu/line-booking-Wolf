@@ -7,107 +7,147 @@
   <style>
     body {
       font-family: 'Noto Sans TC', sans-serif;
-      background-color: #f0f0f0;
+      background-color: #f5f5f5;
       padding: 2rem;
       color: #333;
     }
     h1 {
       font-size: 1.8rem;
       margin-bottom: 1rem;
-      color: #2c3e50;
     }
-    .form-group {
-      margin-bottom: 1rem;
+    form {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-width: 500px;
+      margin: 0 auto 2rem;
     }
     label {
       display: block;
+      margin-top: 1rem;
       font-weight: bold;
-      margin-bottom: 0.5rem;
     }
     select, input {
       width: 100%;
       padding: 0.5rem;
-      border-radius: 6px;
+      margin-top: 0.3rem;
       border: 1px solid #ccc;
-      font-size: 1rem;
+      border-radius: 5px;
     }
     button {
+      margin-top: 1.5rem;
+      padding: 0.7rem 1.2rem;
       background-color: #4CAF50;
       color: white;
-      padding: 0.6rem 1.2rem;
       border: none;
-      border-radius: 6px;
+      border-radius: 5px;
       cursor: pointer;
       font-size: 1rem;
     }
     .result {
-      margin-top: 2rem;
-      background-color: #fff;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: 2rem auto;
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     .error {
       color: red;
       margin-top: 1rem;
     }
+    .gcal-link {
+      margin-top: 1rem;
+      display: block;
+      font-size: 1rem;
+    }
   </style>
 </head>
 <body>
   <h1>🔍 查詢我的訂位</h1>
-  <div class="form-group">
-    <label for="datetime">請選擇您的訂位時段：</label>
-    <select id="datetime"></select>
-  </div>
-  <div class="form-group">
-    <label for="phone">請輸入手機號碼：</label>
-    <input type="tel" id="phone" placeholder="請輸入完整手機號碼" />
-  </div>
-  <button onclick="searchBooking()">查詢</button>
-  <div id="result"></div>
+  <form id="searchForm">
+    <label for="datetime">選擇用餐時段：</label>
+    <select id="datetime" required></select>
+
+    <label for="phone">手機號碼：</label>
+    <input type="tel" id="phone" placeholder="請輸入您的完整手機號碼" required />
+
+    <button type="submit">查詢</button>
+    <div class="error" id="error"></div>
+  </form>
+
+  <div class="result" id="result" style="display:none;"></div>
 
   <script>
-    let bookings = [];
+    let allData = [];
 
     async function loadData() {
-      const response = await fetch("https://coolka-hsu.github.io/line-booking-Wolf/search_data.json");
-      bookings = await response.json();
+      const res = await fetch("https://coolka-hsu.github.io/line-booking-Wolf/search_data.json");
+      allData = await res.json();
 
-      const datetimeSelect = document.getElementById("datetime");
-      const options = [...new Set(bookings.map(b => `${b.date}　${b.time}`))]; // 全形空格
-      options.forEach(opt => {
-        const option = document.createElement("option");
-        option.value = opt;
-        option.textContent = opt;
-        datetimeSelect.appendChild(option);
+      const select = document.getElementById("datetime");
+      const seen = new Set();
+
+      allData.forEach(entry => {
+        const key = `${entry.date}　${entry.time}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          const option = document.createElement("option");
+          option.value = key;
+          option.textContent = key;
+          select.appendChild(option);
+        }
       });
     }
 
-    function searchBooking() {
-      const selectedDatetime = document.getElementById("datetime").value;
-      const phone = document.getElementById("phone").value.trim();
-      const resultDiv = document.getElementById("result");
-      resultDiv.innerHTML = "";
+    function createGCalLink(date, time) {
+      const dt = new Date(`${date} ${time}`);
+      const pad = n => n.toString().padStart(2, '0');
+      const format = d => `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
 
-      const [date, time] = selectedDatetime.split("　");
+      const start = format(dt);
+      const end = format(new Date(dt.getTime() + 60 * 60 * 1000));
 
-      const match = bookings.find(b => b.date === date && b.time === time && b.phone === phone);
+      const params = new URLSearchParams({
+        text: "北宜32K 訂位提醒",
+        dates: `${start}/${end}`,
+        details: "阿義提醒您：這是您在【北宜32K 狼來了碳烤羊腿】的訂位。建議提前抵達！",
+        location: "北宜32K 狼來了碳烤羊腿"
+      });
 
-      if (match) {
-        resultDiv.innerHTML = `
-          <div class="result">
-            <p><strong>📅 訂位日期：</strong>${match.date}</p>
-            <p><strong>⏰ 用餐時段：</strong>${match.time}</p>
-            <p><strong>🙍‍♂️ LINE社群名稱：</strong>${match.line_name}</p>
-            <p><strong>📞 手機號碼：</strong>${match.phone}</p>
-            <p><strong>👨‍👩‍👧‍👦 人數：</strong>${match.people}</p>
-            <p><strong>📝 備註：</strong>${match.note || "無"}</p>
-          </div>
-        `;
-      } else {
-        resultDiv.innerHTML = `<p class="error">查無資訊或填寫電話錯誤。</p>`;
-      }
+      return `https://calendar.google.com/calendar/r/eventedit?${params.toString()}`;
     }
+
+    document.getElementById("searchForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const datetime = document.getElementById("datetime").value;
+      const phone = document.getElementById("phone").value.trim();
+      const error = document.getElementById("error");
+      const result = document.getElementById("result");
+      error.textContent = "";
+
+      const found = allData.find(entry => `${entry.date}　${entry.time}` === datetime && entry.phone === phone);
+
+      if (!found) {
+        error.textContent = "查無資訊或填寫電話錯誤";
+        result.style.display = "none";
+        return;
+      }
+
+      const html = `
+        <p><strong>📅 訂位日期：</strong>${found.date}</p>
+        <p><strong>⏰ 用餐時段：</strong>${found.time}</p>
+        <p><strong>🙍‍♂️ LINE社群名稱：</strong>${found.line_name}</p>
+        <p><strong>📞 手機號碼：</strong>${found.phone}</p>
+        <p><strong>👨‍👩‍👧‍👦 人數：</strong>${found.people}</p>
+        <p><strong>📝 備註：</strong>${found.note || "無"}</p>
+        <a class="gcal-link" href="${createGCalLink(found.date, found.time)}" target="_blank">📆 新增到 Google 日曆提醒我</a>
+      `;
+
+      result.innerHTML = html;
+      result.style.display = "block";
+    });
 
     loadData();
   </script>
