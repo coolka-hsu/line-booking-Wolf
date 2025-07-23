@@ -30,26 +30,27 @@
     </div>
     <div class="form-group">
       <label>訂位大名</label>
-      <input type="text" name="display_name" placeholder="請填寫您的姓名">
+      <input type="text" name="display_name" placeholder="請填寫您的姓名" required>
     </div>
     <div class="form-group">
       <label>Line社群ID</label>
-      <input type="text" name="line_name" placeholder="請填寫您在社群中的名稱">
+      <input type="text" name="line_name" placeholder="請填寫您在社群中的名稱" required>
     </div>
     <div class="form-group">
       <label>手機號碼</label>
-      <input type="tel" name="phone" placeholder="請填寫正確號碼，避免無法聯繫">
+      <input type="tel" name="phone" placeholder="請填寫正確號碼，避免無法聯繫" required>
     </div>
     <div class="form-group">
       <label>用餐人數</label>
-      <select name="adults">
-        <option value="">大人 (0)</option>
-        ${[...Array(11).keys()].map(i => `<option value="${i}">大人 (${i})</option>`).join('')}
+      <select name="adults" required>
+        <option value="">請選擇大人數量</option>
+        ${[...Array(11).keys()].map(i => `<option value="${i}">大人(${i})</option>`).join('')}
       </select>
-      <select name="children">
-        <option value="">小朋友 (0)</option>
-        ${[...Array(11).keys()].map(i => `<option value="${i}">小朋友 (${i})</option>`).join('')}
+      <select name="children" required>
+        <option value="">請選擇小朋友數量</option>
+        ${[...Array(11).keys()].map(i => `<option value="${i}">小朋友(${i})</option>`).join('')}
       </select>
+      <small>總人數請勿超過 10 位</small>
     </div>
     <div class="form-group">
       <label>備註</label>
@@ -70,7 +71,6 @@
       if (!liff.isLoggedIn()) liff.login();
       profile = await liff.getProfile();
 
-      // 取得可訂時段
       const res = await fetch("https://script.google.com/macros/s/AKfycbzFfLFp1nUe75gAAPirzMcH6AaDpHgpI2H90nk518jfZzOQg1k7FZgGSJ0Ob-Il9nOa8A/exec");
       const times = await res.json();
       const container = document.getElementById("timeOptions");
@@ -93,14 +93,23 @@
     document.getElementById("bookingForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const form = new FormData(e.target);
+      const adults = parseInt(form.get("adults")) || 0;
+      const children = parseInt(form.get("children")) || 0;
+      const total = adults + children;
+
+      if (total > 10) {
+        document.getElementById("resultMsg").textContent = "❌ 人數超過十位，請重新選擇";
+        return;
+      }
+
       const data = {
         liff_uid: profile.userId,
         liff_name: profile.displayName,
         display_name: form.get("display_name"),
         line_name: form.get("line_name"),
         phone: form.get("phone"),
-        adults: form.get("adults"),
-        children: form.get("children"),
+        adults,
+        children,
         note: form.get("note"),
         date: selected.date,
         time: selected.time,
