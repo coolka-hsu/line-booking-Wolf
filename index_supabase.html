@@ -29,15 +29,10 @@
       <label>用餐人數</label>
       <select name="adults" required>
         <option value="">請選擇大人數量</option>
-        <option value="1">大人(1)</option><option value="2">大人(2)</option><option value="3">大人(3)</option>
-        <option value="4">大人(4)</option><option value="5">大人(5)</option><option value="6">大人(6)</option>
-        <option value="7">大人(7)</option><option value="8">大人(8)</option><option value="9">大人(9)</option><option value="10">大人(10)</option>
+        ${[...Array(10).keys()].map(i => `<option value="${i + 1}">大人(${i + 1})</option>`).join("")}
       </select>
       <select name="children" required>
-        <option value="0">小朋友(0)</option><option value="1">小朋友(1)</option><option value="2">小朋友(2)</option>
-        <option value="3">小朋友(3)</option><option value="4">小朋友(4)</option><option value="5">小朋友(5)</option>
-        <option value="6">小朋友(6)</option><option value="7">小朋友(7)</option><option value="8">小朋友(8)</option>
-        <option value="9">小朋友(9)</option><option value="10">小朋友(10)</option>
+        ${[...Array(11).keys()].map(i => `<option value="${i}">小朋友(${i})</option>`).join("")}
       </select>
       <small>總人數請勿超過 10 位</small>
     </div>
@@ -49,8 +44,7 @@
 
   <script>
     const liffId = "2007778847-o44AJR30";
-    const supabaseUrl = "https://tqxkicmuqbdtjwydasov.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxeGtpY211cWJkdGp3eWRhc292Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMzMzk3NjksImV4cCI6MjA2ODkxNTc2OX0.rL2lnqxXy2nOrki1s40K0VkeClRLfiJwMKD33QjFUJg"; // 請保留原本有效 key
+    const getOpenSlotsUrl = "https://script.google.com/macros/s/AKfycbzGbLz5op4vTp_3ypxBt0S2kSgKoeI8hfnMfwCKF10IUS-jrsjHUKO_6nWy5CNWrivqeQ/exec";
     const postUrl = "https://script.google.com/macros/s/AKfycbxrX6Yuhh8LM0jJ0Xc-i_sw1lN0Wvc9Ge_MUWCgmLsm51N1NcrZSudnQIkOEaBJdAoiZA/exec";
 
     let profile = {};
@@ -62,12 +56,7 @@
       profile = await liff.getProfile();
 
       try {
-        const res = await fetch(`${supabaseUrl}/rest/v1/open_slots?select=date,time,status,timestamp`, {
-          headers: {
-            apikey: supabaseKey,
-            Authorization: `Bearer ${supabaseKey}`
-          }
-        });
+        const res = await fetch(getOpenSlotsUrl);
         const data = await res.json();
         const container = document.getElementById("timeOptions");
         container.innerHTML = "";
@@ -94,7 +83,7 @@
         });
 
       } catch (err) {
-        console.error("❌ Supabase 載入失敗", err);
+        console.error("❌ 載入失敗", err);
         document.getElementById("timeOptions").innerHTML = "❌ 無法載入資料，請稍後再試。";
       }
     }
