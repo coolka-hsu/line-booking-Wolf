@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>LINE 定位系統（資料庫版）</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
+    input, select, textarea { width: 100%; padding: 8px; margin-top: 8px; }
+    .hidden { display: none; }
+    .form-group { margin-bottom: 16px; }
+    button { padding: 10px 20px; background: #28a745; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+    #timeOptions button { display: block; margin: 5px 0; width: 100%; }
+  </style>
+</head>
+<body>
+  <h2>📅 請選擇想要預約的時間</h2>
+  <div id="timeOptions">載入中......請稍候</div>
+
+  <form id="bookingForm" class="hidden">
+    <h3>請填寫以下資訊</h3>
+    <div class="form-group"><label>用餐日期</label><input type="text" name="date" readonly></div>
+    <div class="form-group"><label>用餐時段</label><input type="text" name="time" readonly></div>
+    <div class="form-group"><label>訂位大名</label><input type="text" name="display_name" required></div>
+    <div class="form-group"><label>Line社群ID</label><input type="text" name="line_name" required></div>
+    <div class="form-group"><label>手機號碼</label><input type="tel" name="phone" required></div>
+    <div class="form-group">
+      <label>用餐人數</label>
+      <select name="adults" required><option value="">請選擇大人數量</option>
+        ${[...Array(10).keys()].map(i => `<option value="${i+1}">大人(${i+1})</option>`).join("")}
+      </select>
+      <select name="children" required>
+        ${[...Array(11).keys()].map(i => `<option value="${i}">小朋友(${i})</option>`).join("")}
+      </select>
+      <small>總人數請勿超過 10 位</small>
+    </div>
+    <div class="form-group"><label>備註</label><textarea name="note"></textarea></div>
+    <button type="submit">送出預約</button>
+  </form>
+
+  <div id="resultMsg" style="margin-top: 20px;"></div>
+
+  <script>
+    const liffId = "2007778847-4d7bwNEV";
+    let profile = {};
+    let selected = {};
+
+    async function init() {
+      await liff.init({ liffId });
+      if (!liff.isLoggedIn()) liff.login();
+      profile = await liff.getProfile();
+
+      const res = await fetch("https://tqxkicmuqbdtjwydasov.supabase.co/rest/v1/open_slots?select=date,time,status,timestamp&status=eq.&apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...");
+      const data = await res.json();
+      const available = data.filter(slot => !slot.status || slot.status === "");
+      const container = document.getElementById("timeOptions");
+      container.innerHTML = "";
+
+      if (available.length === 0) {
+        container.innerHTML = `<div style="padding:20px;background:#fffbe7;border:1px solid #ccc;border-radius:8px;">
+          <strong>很抱歉，本月訂位皆已全數預定完畢，</strong><br>請持續關注 LINE 社群，謝謝！</div>`;
+        return;
+      }
+
+      available.forEach(slot => {
+        const btn = document.createElement("button");
+        btn.textContent = `${slot.date} ${slot.time}`;
+        btn.onclick = () => {
+          selected = slot;
+          document.querySelector('input[name="date"]').value = slot.date;
+          document.querySelector('input[name="time"]').value = slot.time;
+          document.getElementById("bookingForm").classList.remove("hidden");
+          window.scrollTo(0, document.body.scrollHeight);
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    document.getElementById("bookingForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const adults = parseInt(form.get("adults")) || 0;
+      const children = parseInt(form.get("children")) || 0;
+      const total = adults + children;
+      if (total > 10) {
+        document.getElementById("resultMsg").textContent = "❌ 人數超過十位，請重新選擇";
+        return;
+      }
+
+      const data = {
+        liff_uid: profile.userId,
+        liff_name: profile.displayName,
+        display_name: form.get("display_name"),
+        line_name: form.get("line_name"),
+        phone: form.get("phone"),
+        adults,
+        children,
+        note: form.get("note"),
+        date: selected.date,
+        time: selected.time
+      };
+
+      const res = await fetch("https://script.google.com/macros/s/AKfycbxrX6Yuhh8LM0jJ0Xc-i_sw1lN0Wvc9Ge_MUWCgmLsm51N1NcrZSudnQIkOEaBJdAoiZA/exec", {
+        method: "POST",
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+      document.getElementById("resultMsg").textContent = result.message;
+      if (result.success) {
+        window.location.href = "https://coolka-hsu.github.io/line-booking-Wolf/success.html";
+      }
+    });
+
+    init();
+  </script>
+</body>
+</html>
