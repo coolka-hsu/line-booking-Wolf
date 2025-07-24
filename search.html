@@ -101,23 +101,23 @@
       });
     }
 
-    function createGCalLink(date, time) {
-      const dt = new Date(`${date} ${time}`);
-      const pad = n => n.toString().padStart(2, '0');
-      const format = d => `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+  function createGCalLink(date, time) {
+    const dt = new Date(`${date} ${time}`);
+    const pad = n => n.toString().padStart(2, '0');
+    const format = d => `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
 
-      const start = format(dt);
-      const end = format(new Date(dt.getTime() + 60 * 60 * 1000));
+    const start = format(dt);
+    const end = format(new Date(dt.getTime() + (2.5 * 60 * 60 * 1000))); // +2小時30分
 
-      const params = new URLSearchParams({
-        text: "北宜32K 訂位提醒",
-        dates: `${start}/${end}`,
-        details: "阿義提醒您：這是您在【北宜32K 狼來了碳烤羊腿】的訂位。建議提前抵達！",
-        location: "232新北市坪林區北宜公路七段32K"
-      });
+    const params = new URLSearchParams({
+      text: "北宜32K 訂位提醒",
+      dates: `${start}/${end}`,
+      details: "阿義提醒您：這是您在【北宜32K 狼來了碳烤羊腿】的訂位。建議提前抵達！"，點擊加入日曆後，請記得點選「新增提醒」 → 選「提前 3 天通知」！,
+      location: "232新北市坪林區北宜公路七段32K"
+  });
 
-      return `https://calendar.google.com/calendar/r/eventedit?${params.toString()}`;
-    }
+  return `https://calendar.google.com/calendar/r/eventedit?${params.toString()}`;
+}
 
     document.getElementById("searchForm").addEventListener("submit", e => {
       e.preventDefault();
@@ -138,6 +138,7 @@
       const html = `
         <p><strong>📅 訂位日期：</strong>${found.date}</p>
         <p><strong>⏰ 用餐時段：</strong>${found.time}</p>
+        <p><strong>🧑 訂位大名：</strong>${found.display_name} 先生/小姐</p>
         <p><strong>🙍‍♂️ LINE社群名稱：</strong>${found.line_name}</p>
         <p><strong>📞 手機號碼：</strong>${found.phone}</p>
         <p><strong>👨‍👩‍👧‍👦 人數：</strong>${found.people}</p>
