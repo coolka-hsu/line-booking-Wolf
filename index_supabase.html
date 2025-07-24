@@ -27,11 +27,16 @@
     <div class="form-group"><label>手機號碼</label><input type="tel" name="phone" required></div>
     <div class="form-group">
       <label>用餐人數</label>
-      <select name="adults" required><option value="">請選擇大人數量</option>
-        ${[...Array(10).keys()].map(i => `<option value="${i+1}">大人(${i+1})</option>`).join("")}
+      <select name="adults" required>
+        <option value="">請選擇大人數量</option>
+        <script>
+          document.write([...Array(10).keys()].map(i => `<option value="${i+1}">大人(${i+1})</option>`).join(""));
+        </script>
       </select>
       <select name="children" required>
-        ${[...Array(11).keys()].map(i => `<option value="${i}">小朋友(${i})</option>`).join("")}
+        <script>
+          document.write([...Array(11).keys()].map(i => `<option value="${i}">小朋友(${i})</option>`).join(""));
+        </script>
       </select>
       <small>總人數請勿超過 10 位</small>
     </div>
@@ -43,6 +48,9 @@
 
   <script>
     const liffId = "2007778847-o44AJR30";
+    const supabaseUrl = "https://tqxkicmuqbdtjwydasov.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxeGtpY211cWJkdGp3eWRhc292Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMzMzk3NjksImV4cCI6MjA2ODkxNTc2OX0.rL2lnqxXy2nOrki1s40K0VkeClRLfiJwMKD33QjFUJg";
+
     let profile = {};
     let selected = {};
 
@@ -51,30 +59,45 @@
       if (!liff.isLoggedIn()) liff.login();
       profile = await liff.getProfile();
 
-      const res = await fetch("https://tqxkicmuqbdtjwydasov.supabase.co/rest/v1/open_slots?select=date,time,status,timestamp&status=eq.&apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...");
-      const data = await res.json();
-      const available = data.filter(slot => !slot.status || slot.status === "");
-      const container = document.getElementById("timeOptions");
-      container.innerHTML = "";
+      try {
+        const res = await fetch(`${supabaseUrl}/rest/v1/open_slots?select=date,time,status,timestamp`, {
+          headers: {
+            apikey: supabaseKey,
+            Authorization: `Bearer ${supabaseKey}`
+          }
+        });
+        const data = await res.json();
 
-      if (available.length === 0) {
-        container.innerHTML = `<div style="padding:20px;background:#fffbe7;border:1px solid #ccc;border-radius:8px;">
-          <strong>很抱歉，本月訂位皆已全數預定完畢，</strong><br>請持續關注 LINE 社群，謝謝！</div>`;
-        return;
+        if (!Array.isArray(data)) throw new Error("資料錯誤");
+
+        const available = data.filter(slot => !slot.status || slot.status === "");
+        const container = document.getElementById("timeOptions");
+        container.innerHTML = "";
+
+        if (available.length === 0) {
+          container.innerHTML = `<div style="padding:20px;background:#fffbe7;border:1px solid #ccc;border-radius:8px;">
+            <strong>很抱歉，本月訂位皆已全數預定完畢，</strong><br>請持續關注 LINE 社群，謝謝！
+          </div>`;
+          return;
+        }
+
+        available.forEach(slot => {
+          const btn = document.createElement("button");
+          btn.textContent = `${slot.date} ${slot.time}`;
+          btn.onclick = () => {
+            selected = slot;
+            document.querySelector('input[name="date"]').value = slot.date;
+            document.querySelector('input[name="time"]').value = slot.time;
+            document.getElementById("bookingForm").classList.remove("hidden");
+            window.scrollTo(0, document.body.scrollHeight);
+          };
+          container.appendChild(btn);
+        });
+
+      } catch (err) {
+        document.getElementById("timeOptions").innerHTML = "❌ 無法載入資料，請稍後再試。";
+        console.error("❌ Supabase 載入失敗", err);
       }
-
-      available.forEach(slot => {
-        const btn = document.createElement("button");
-        btn.textContent = `${slot.date} ${slot.time}`;
-        btn.onclick = () => {
-          selected = slot;
-          document.querySelector('input[name="date"]').value = slot.date;
-          document.querySelector('input[name="time"]').value = slot.time;
-          document.getElementById("bookingForm").classList.remove("hidden");
-          window.scrollTo(0, document.body.scrollHeight);
-        };
-        container.appendChild(btn);
-      });
     }
 
     document.getElementById("bookingForm").addEventListener("submit", async (e) => {
