@@ -97,7 +97,7 @@
       container.innerHTML = "";
 
 if (times.length === 0) {
-  container.innerHTML = 
+  container.innerHTML = `
     <div style="padding: 20px; background: #fffbe7; border: 1px solid #ccc; border-radius: 8px;">
       <strong>很抱歉，本月訂位皆已全數預定完畢，</strong><br>
       下個月開放訂位時間，請關注<br>
@@ -107,12 +107,12 @@ if (times.length === 0) {
         </a>
       </strong>，謝謝！
     </div>
-  ;
+  `;
   return;
 }
       times.forEach(t => {
         const btn = document.createElement("button");
-        btn.textContent = ${t.date} ${t.time};
+        btn.textContent = `${t.date} ${t.time}`;
         btn.onclick = () => {
           selected = t;
           document.querySelector('input[name="date"]').value = t.date;
