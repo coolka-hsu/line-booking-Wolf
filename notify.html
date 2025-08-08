@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>發送預約通知</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    body { font-family: "Noto Sans TC", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+           background: #f6f7f9; margin: 0; padding: 24px; color: #222; }
+    .card { background: #fff; border-radius: 14px; box-shadow: 0 8px 20px rgba(0,0,0,.06);
+            max-width: 520px; margin: 0 auto; padding: 20px 18px; }
+    h1 { font-size: 20px; margin: 0 0 8px; }
+    .sub { color:#666; font-size: 14px; margin-bottom: 18px; }
+    .row { margin: 8px 0; font-size: 15px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .btn { display: inline-block; width: 100%; padding: 12px 16px; border-radius: 10px; border: 0; cursor: pointer; font-size: 16px; }
+    .btn-primary { background:#28a745; color:#fff; }
+    .btn-ghost { background:#eef2f7; color:#333; margin-top:10px; }
+    .ok { color:#28a745; font-weight:600; }
+    .err { color:#c62828; font-weight:600; }
+    .hint { color:#777; font-size: 13px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>正在通知社群…</h1>
+    <div class="sub">幫你把預約訊息發到聊天視窗（或讓你選擇要分享的對象）。</div>
+
+    <div id="preview" class="mono row"></div>
+    <div id="status" class="row"></div>
+
+    <button id="retry" class="btn btn-ghost" style="display:none;">重試發送</button>
+    <button id="close" class="btn btn-primary" style="display:none;">完成並關閉</button>
+
+    <div class="hint">
+      若無法自動送出，我們會把訊息複製到剪貼簿，請你手動貼到社群。
+    </div>
+  </div>
+
+  <script>
+    // === 需要設定你的 LIFF ID ===
+    const liffId = "2007778847-o44AJR30";
+
+    // 解析 URL Query 參數
+    function qp(key) {
+      const u = new URL(location.href);
+      return u.searchParams.get(key) || "";
+    }
+
+    // 組訊息
+    function buildMsg({ date, time, total, phone }) {
+      // date 預期格式 yyyy-MM-dd
+      const [yyyy, mm, dd] = (date || "").split("-");
+      const last3 = (phone || "").toString().slice(-3);
+      return `【阿義師，我預定了${Number(mm)}月${Number(dd)}日 ${time} ${total}人 手機尾碼${last3}】`;
+    }
+
+    async function sendToChat(text) {
+      const inClient = liff.isInClient();
+      const ctx = liff.getContext() || {};
+      const ctxType = ctx.type; // utou, room, group, none
+
+      // 1) 在 LINE 客戶端 + 有聊天情境 → 直接以使用者身分發訊息
+      if (inClient && ["utou", "room", "group"].includes(ctxType)) {
+        await liff.sendMessages([{ type: "text", text }]);
+        return { ok: true, via: "sendMessages" };
+      }
+
+      // 2) 不在聊天情境 → 用 shareTargetPicker 讓使用者挑目標聊天室
+      if (liff.isApiAvailable("shareTargetPicker")) {
+        const r = await liff.shareTargetPicker([{ type: "text", text }]);
+        if (r) return { ok: true, via: "shareTargetPicker" };
+      }
+
+      // 3) 最後備援：複製到剪貼簿
+      try {
+        await navigator.clipboard.writeText(text);
+        return { ok: false, via: "copied" };
+      } catch {
+        return { ok: false, via: "fallback" };
+      }
+    }
+
+    async function go() {
+      // 取得預約資料（由 index.html 透過 URL 帶參數過來）
+      const date = qp("date");
+      const time = qp("time");
+      const adults = Number(qp("adults") || 0);
+      const children = Number(qp("children") || 0);
+      const phone = qp("phone");
+      const total = adults + children;
+
+      const msg = buildMsg({ date, time, total, phone });
+
+      // 預覽
+      document.getElementById("preview").textContent = msg;
+
+      try {
+        await liff.init({ liffId });
+        if (!liff.isLoggedIn()) {
+          liff.login({ redirectUri: location.href });
+          return;
+        }
+
+        const result = await sendToChat(msg);
+        const statusEl = document.getElementById("status");
+        const closeBtn = document.getElementById("close");
+        const retryBtn = document.getElementById("retry");
+
+        if (result.ok) {
+          statusEl.innerHTML = `<span class="ok">已送出：</span>${result.via === "sendMessages" ? "已直接發到聊天室" : "已透過分享面板送出"}`;
+          closeBtn.style.display = "inline-block";
+          closeBtn.onclick = () => {
+            if (liff.isInClient()) liff.closeWindow();
+            else window.history.length ? history.back() : window.close();
+          };
+        } else {
+          // 備援：已複製 / 或請手動貼上
+          if (result.via === "copied") {
+            statusEl.innerHTML = `<span class="err">未自動送出</span>（訊息已複製，請到社群貼上）`;
+          } else {
+            statusEl.innerHTML = `<span class="err">未自動送出</span>（請手動複製貼上）`;
+          }
+          retryBtn.style.display = "inline-block";
+          retryBtn.onclick = () => sendToChat(msg).then(() => location.reload());
+        }
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById("status").innerHTML = `<span class="err">初始化失敗：</span>${err.message || err}`;
+      }
+    }
+
+    go();
+  </script>
+</body>
+</html>
