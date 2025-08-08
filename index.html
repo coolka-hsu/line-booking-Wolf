@@ -1,3 +1,7 @@
+我還是直接整合到index.html好了
+
+以下是我的index.htm語法，請協助完美整合
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -11,226 +15,121 @@
     .hidden { display: none; }
     .form-group { margin-bottom: 16px; }
     button { padding: 10px 20px; background: #28a745; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
-    button[disabled] { opacity: .6; cursor: not-allowed; }
     #timeOptions button { display: block; margin: 5px 0; width: 100%; }
-    .muted { color:#666; font-size: 14px; }
   </style>
 </head>
 <body>
   <h2>📅 請選擇想要預約的時間</h2>
-  <div id="timeOptions">載入中......載入時間預計 5 秒</div>
+  <div id="timeOptions">載入中......載入時間預計5秒</div>
 
   <form id="bookingForm" class="hidden">
     <h3>請填寫以下資訊</h3>
-
     <div class="form-group">
       <label>用餐日期</label>
       <input type="text" name="date" readonly>
     </div>
-
     <div class="form-group">
       <label>用餐時段</label>
       <input type="text" name="time" readonly>
     </div>
-
     <div class="form-group">
       <label>訂位大名</label>
       <input type="text" name="display_name" placeholder="請填寫您的姓名" required>
     </div>
-
     <div class="form-group">
       <label>Line社群ID</label>
       <input type="text" name="line_name" placeholder="請填寫您在社群中的名稱" required>
     </div>
-
     <div class="form-group">
       <label>手機號碼</label>
       <input type="tel" name="phone" placeholder="請填寫正確號碼，避免無法聯繫" required>
-      <div class="muted">（提交後系統會保留前導 0，資料庫與試算表都以文字儲存）</div>
     </div>
-
     <div class="form-group">
-      <label>用餐人數</label>
-      <select name="adults" required>
-        <option value="">請選擇大人數量</option>
-        <option value="1">大人(1)</option>
-        <option value="2">大人(2)</option>
-        <option value="3">大人(3)</option>
-        <option value="4">大人(4)</option>
-        <option value="5">大人(5)</option>
-        <option value="6">大人(6)</option>
-        <option value="7">大人(7)</option>
-        <option value="8">大人(8)</option>
-        <option value="9">大人(9)</option>
-        <option value="10">大人(10)</option>
-      </select>
-      <select name="children" required>
-        <option value="0">小朋友(0)</option>
-        <option value="1">小朋友(1)</option>
-        <option value="2">小朋友(2)</option>
-        <option value="3">小朋友(3)</option>
-        <option value="4">小朋友(4)</option>
-        <option value="5">小朋友(5)</option>
-        <option value="6">小朋友(6)</option>
-        <option value="7">小朋友(7)</option>
-        <option value="8">小朋友(8)</option>
-        <option value="9">小朋友(9)</option>
-        <option value="10">小朋友(10)</option>
-      </select>
-      <small>總人數請勿超過 10 位</small>
-    </div>
+      <div class="form-group">
+  <label>用餐人數</label>
+  <select name="adults" required>
+    <option value="">請選擇大人數量</option>
+    <option value="1">大人(1)</option>
+    <option value="2">大人(2)</option>
+    <option value="3">大人(3)</option>
+    <option value="4">大人(4)</option>
+    <option value="5">大人(5)</option>
+    <option value="6">大人(6)</option>
+    <option value="7">大人(7)</option>
+    <option value="8">大人(8)</option>
+    <option value="9">大人(9)</option>
+    <option value="10">大人(10)</option>
+  </select>
+  <select name="children" required>
+    <option value="0">小朋友(0)</option>
+    <option value="1">小朋友(1)</option>
+    <option value="2">小朋友(2)</option>
+    <option value="3">小朋友(3)</option>
+    <option value="4">小朋友(4)</option>
+    <option value="5">小朋友(5)</option>
+    <option value="6">小朋友(6)</option>
+    <option value="7">小朋友(7)</option>
+    <option value="8">小朋友(8)</option>
+    <option value="9">小朋友(9)</option>
+    <option value="10">小朋友(10)</option>
+  </select>
 
+  <small>總人數請勿超過 10 位</small>
+</div>
     <div class="form-group">
       <label>備註</label>
       <textarea name="note" placeholder="若有小朋友請註記年齡"></textarea>
     </div>
-
-    <button id="submitBtn" type="submit">送出預約</button>
+    <button type="submit">送出預約</button>
   </form>
 
   <div id="resultMsg" style="margin-top: 20px;"></div>
 
   <script>
-    // === 你的設定 ===
     const liffId = "2007778847-4d7bwNEV"; // 你的 LIFF ID
-    const getOpenSlotsUrl = "https://script.google.com/macros/s/AKfycbzGbLz5op4vTp_3ypxBt0S2kSgKoeI8hfnMfwCKF10IUS-jrsjHUKO_6nWy5CNWrivqeQ/exec"; // GAS 代理：讀時段
-    const postUrl = "https://script.google.com/macros/s/AKfycbxrX6Yuhh8LM0jJ0Xc-i_sw1lN0Wvc9Ge_MUWCgmLsm51N1NcrZSudnQIkOEaBJdAoiZA/exec"; // GAS 寫入端點（依你實際部署調整）
-
     let profile = {};
     let selected = {};
-    let submitting = false;
-
-    // === LIFF 訊息：組字串 ===
-    function buildBookingMessage({ date, time, total, phone }) {
-      const [yyyy, mm, dd] = (date || "").split("-");
-      const last3 = (phone || "").toString().slice(-3);
-      return `【阿義師，我預定了${Number(mm)}月${Number(dd)}日 ${time} ${total}人 手機尾碼${last3}】`;
-    }
-
-    // === LIFF 訊息：送到聊天室 / 分享面板 / 複製備援 ===
-    async function trySendChatMessage(text) {
-      try {
-        const inClient = liff.isInClient();
-        const ctx = liff.getContext() || {};
-        const ctxType = ctx.type; // utou, room, group, none
-
-        if (inClient && ["utou", "room", "group"].includes(ctxType)) {
-          await liff.sendMessages([{ type: "text", text }]);
-          return { ok: true, via: "sendMessages" };
-        }
-
-        if (liff.isApiAvailable("shareTargetPicker")) {
-          const res = await liff.shareTargetPicker([{ type: "text", text }]);
-          if (res) return { ok: true, via: "shareTargetPicker" };
-        }
-
-        try {
-          await navigator.clipboard.writeText(text);
-          return { ok: false, via: "copied" };
-        } catch (_) {
-          return { ok: false, via: "fallback" };
-        }
-      } catch (err) {
-        console.error("發送聊天室訊息失敗：", err);
-        return { ok: false, via: "error", err };
-      }
-    }
-
-    async function afterBookingSuccess(payload) {
-      const msg = buildBookingMessage({
-        date: payload.date,
-        time: payload.time,
-        total: (payload.adults || 0) + (payload.children || 0),
-        phone: payload.phone
-      });
-
-      const r = await trySendChatMessage(msg);
-
-      if (!r.ok) {
-        try {
-          await navigator.clipboard.writeText(msg);
-          alert("已複製通知訊息，請貼到社群通知阿義師：\n\n" + msg);
-        } catch (_) {
-          alert("請把以下訊息貼到社群通知阿義師：\n\n" + msg);
-        }
-      }
-
-      // 最後導到成功頁
-      window.location.href = "https://coolka-hsu.github.io/line-booking-Wolf/success.html";
-    }
 
     async function init() {
       await liff.init({ liffId });
       if (!liff.isLoggedIn()) liff.login();
-
       profile = await liff.getProfile();
 
-      try {
-        const res = await fetch(getOpenSlotsUrl);
-        const times = await res.json();
-        const container = document.getElementById("timeOptions");
-        container.innerHTML = "";
+      const res = await fetch("https://script.google.com/macros/s/AKfycbzFfLFp1nUe75gAAPirzMcH6AaDpHgpI2H90nk518jfZzOQg1k7FZgGSJ0Ob-Il9nOa8A/exec");
+      const times = await res.json();
+      const container = document.getElementById("timeOptions");
+      container.innerHTML = "";
 
-        if (!Array.isArray(times) || times.length === 0) {
-          container.innerHTML = `
-            <div style="padding: 20px; background: #fffbe7; border: 1px solid #ccc; border-radius: 8px;">
-              <strong>很抱歉，本月訂位皆已全數預定完畢，</strong><br>
-              下個月開放訂位時間，請關注<br>
-              <strong>
-                <a href="https://line.me/ti/g2/d94EbuAl2Ts6wmTg-fM6qr4b7Bwpj6c7MDZ5Ug?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" style="color: #d2691e; text-decoration: underline;">
-                  【北宜32K "狼來了碳烤羊腿"】LINE社群
-                </a>
-              </strong>，謝謝！
-            </div>
-          `;
-          return;
-        }
-
-        // 可視需要過濾 status（假設空字串 / null 才是可預約）
-        const available = times.filter(t => !t.status || String(t.status).trim() === "");
-
-        if (available.length === 0) {
-          container.innerHTML = `
-            <div style="padding: 20px; background: #fffbe7; border: 1px solid #ccc; border-radius: 8px;">
-              <strong>很抱歉，本月訂位皆已全數預定完畢，</strong><br>
-              下個月開放訂位時間，請關注<br>
-              <strong>
-                <a href="https://line.me/ti/g2/d94EbuAl2Ts6wmTg-fM6qr4b7Bwpj6c7MDZ5Ug?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" style="color: #d2691e; text-decoration: underline;">
-                  【北宜32K "狼來了碳烤羊腿"】LINE社群
-                </a>
-              </strong>，謝謝！
-            </div>
-          `;
-          return;
-        }
-
-        available.forEach(t => {
-          const btn = document.createElement("button");
-          btn.textContent = `${t.date} ${t.time}`;
-          btn.onclick = () => {
-            selected = t;
-            document.querySelector('input[name="date"]').value = t.date;
-            document.querySelector('input[name="time"]').value = t.time;
-            document.getElementById("bookingForm").classList.remove("hidden");
-            window.scrollTo(0, document.body.scrollHeight);
-          };
-          container.appendChild(btn);
-        });
-      } catch (err) {
-        console.error("載入時段失敗：", err);
-        document.getElementById("timeOptions").innerHTML = "❌ 無法載入資料，請稍後再試。";
-      }
+if (times.length === 0) {
+  container.innerHTML = `
+    <div style="padding: 20px; background: #fffbe7; border: 1px solid #ccc; border-radius: 8px;">
+      <strong>很抱歉，本月訂位皆已全數預定完畢，</strong><br>
+      下個月開放訂位時間，請關注<br>
+      <strong>
+        <a href="https://line.me/ti/g2/d94EbuAl2Ts6wmTg-fM6qr4b7Bwpj6c7MDZ5Ug?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" style="color: #d2691e; text-decoration: underline;">
+          【北宜32K "狼來了碳烤羊腿"】LINE社群
+        </a>
+      </strong>，謝謝！
+    </div>
+  `;
+  return;
+}
+      times.forEach(t => {
+        const btn = document.createElement("button");
+        btn.textContent = `${t.date} ${t.time}`;
+        btn.onclick = () => {
+          selected = t;
+          document.querySelector('input[name="date"]').value = t.date;
+          document.querySelector('input[name="time"]').value = t.time;
+          document.getElementById("bookingForm").classList.remove("hidden");
+          window.scrollTo(0, document.body.scrollHeight);
+        };
+        container.appendChild(btn);
+      });
     }
 
     document.getElementById("bookingForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (submitting) return; // 防重複送出
-      submitting = true;
-
-      const submitBtn = document.getElementById("submitBtn");
-      submitBtn.disabled = true;
-      submitBtn.textContent = "送出中…";
-
       const form = new FormData(e.target);
       const adults = parseInt(form.get("adults")) || 0;
       const children = parseInt(form.get("children")) || 0;
@@ -238,15 +137,12 @@
 
       if (total > 10) {
         document.getElementById("resultMsg").textContent = "❌ 人數超過十位，請重新選擇";
-        submitBtn.disabled = false;
-        submitBtn.textContent = "送出預約";
-        submitting = false;
         return;
       }
 
       const data = {
-        uid: profile.userId,
-        name: profile.displayName,
+        liff_uid: profile.userId,
+        liff_name: profile.displayName,
         display_name: form.get("display_name"),
         line_name: form.get("line_name"),
         phone: form.get("phone"),
@@ -254,32 +150,21 @@
         children,
         note: form.get("note"),
         date: selected.date,
-        time: selected.time
+        time: selected.time,
+        index: selected.index
       };
 
-      try {
-        const res = await fetch(postUrl, {
-          method: "POST",
-          body: JSON.stringify(data)
-        });
+      const res = await fetch("https://script.google.com/macros/s/AKfycbzFfLFp1nUe75gAAPirzMcH6AaDpHgpI2H90nk518jfZzOQg1k7FZgGSJ0Ob-Il9nOa8A/exec", {
+        method: "POST",
+        body: JSON.stringify(data)
+      });
 
-        const result = await res.json();
-        document.getElementById("resultMsg").textContent = result.message || "";
+      const result = await res.json();
+      document.getElementById("resultMsg").textContent = result.message;
+     if (result.success) {
+      window.location.href = "https://coolka-hsu.github.io/line-booking-Wolf/success.html";
+    }
 
-        if (result.success) {
-          await afterBookingSuccess(data); // 先發訊息，再跳轉
-        } else {
-          submitBtn.disabled = false;
-          submitBtn.textContent = "送出預約";
-          submitting = false;
-        }
-      } catch (err) {
-        console.error("預約錯誤：", err);
-        document.getElementById("resultMsg").textContent = "❌ 發生錯誤，請稍後再試";
-        submitBtn.disabled = false;
-        submitBtn.textContent = "送出預約";
-        submitting = false;
-      }
     });
 
     init();
