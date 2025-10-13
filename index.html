@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>用餐與訂位公告｜北宜32K 狼來了碳烤羊腿</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      padding: 24px;
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.8;
+    }
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 28px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    h2 {
+      text-align: center;
+      color: #1a8917;
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 15px;
+      margin: 10px 0;
+    }
+    .sep {
+      margin: 20px 0;
+      border-bottom: 1px dashed #ccc;
+    }
+    button {
+      display: block;
+      width: 100%;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 17px;
+      padding: 14px;
+      margin-top: 25px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #23913d;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>【用餐與訂位公告】</h2>
+
+    <p>🍽 <strong>用餐費用</strong></p>
+    <p>・大朋友（11歲含以上）：1000元/位<br>
+       ・小朋友（10歲含以下）：500元/位<br>
+       ・小小朋友（3歲含以下）：免費
+    </p>
+
+    <p>▲若有另外加點餐點，將另行計價，<strong>請訂位完成後於LINE群組發送訊息告知老闆</strong>，以便提前備料。</p>
+
+    <div class="sep"></div>
+
+    <p>📌 <strong>訂位須知</strong></p>
+
+    <p>
+      1️⃣ 本餐廳以「人數」計費，餐點將依實際用餐人數設計搭配。<br>
+      2️⃣ <strong>請於訂位時正確填寫用餐人數（含大人與小孩）</strong>，以免現場核對時造成費用計算不符。<br>
+      3️⃣ 若需更改用餐人數，請於<strong>用餐前48小時</strong>告知，以便廚房準備食材。<br>
+      4️⃣ 因餐點依人數預備，為避免食材浪費，<strong>若當日到場人數少於原訂位人數，將以原訂位人數計價</strong>。<br>
+      5️⃣ 若臨時取消訂位，請儘早通知我們；<strong>逾期未通知可能影響日後訂位權益</strong>。<br>
+      6️⃣ 為維持用餐品質，請<strong>準時入席</strong>；遲到超過15分鐘，餐點將依現場狀況進行安排。<br>
+      7️⃣ <strong>若有特殊飲食需求（如食材過敏）</strong>，請於訂位時事先告知，我們將盡力協助調整。
+    </p>
+
+    <button id="agreeBtn">我已閱讀並同意，前往訂位</button>
+  </div>
+
+  <script>
+    document.getElementById("agreeBtn").addEventListener("click", () => {
+      // ✅ 導向訂位頁面（請依實際檔名修改）
+      window.location.href = "booking.html";
+    });
+  </script>
+</body>
+</html>
