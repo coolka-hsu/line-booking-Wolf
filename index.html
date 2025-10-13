@@ -6,257 +6,122 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
-    :root{
-      --brand:#28a745;
-      --bg:#f5f5f5;
-      --text:#333;
-      --card:#fff;
-      --muted:#666;
-      --border:#e9e9e9;
-    }
-    body { font-family: "Noto Sans TC", system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans TC", sans-serif; padding: 20px; background: var(--bg); color: var(--text); }
-    h1,h2,h3{ margin: 0 0 12px; }
-    .card {
-      background: var(--card);
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,.06);
-      border: 1px solid var(--border);
-      padding: 18px;
-      max-width: 720px;
-      margin: 0 auto 16px;
-    }
+    body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
+    input, select, textarea { width: 100%; padding: 8px; margin-top: 8px; }
     .hidden { display: none; }
-
-    /* Buttons */
-    .btn {
-      display: inline-block;
-      padding: 12px 18px;
-      background: var(--brand);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 700;
-      letter-spacing: .02em;
-    }
-    .btn:disabled{ opacity:.6; cursor:not-allowed; }
-    .btn-secondary{
-      background:#1e88e5;
-    }
-
-    /* Form */
-    .form-group { margin-bottom: 14px; }
-    label { display:block; font-weight:700; margin-bottom:6px; }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #dcdcdc;
-      border-radius: 8px;
-      background: #fff;
-      font-size: 16px;
-    }
-    textarea{ min-height: 88px; resize: vertical; }
-
-    /* Time buttons */
-    #timeOptions button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin: 6px 0;
-      background: #fff;
-      border: 1px solid #dfe6e9;
-      border-radius: 10px;
-      cursor: pointer;
-      text-align: left;
-    }
-    #timeOptions button:hover{ border-color:#b2bec3; }
-
-    .muted { color: var(--muted); }
-
-    /* Announcement styles */
-    .announce h2{ font-size:20px; margin-bottom:8px; }
-    .announce p{ margin:8px 0; line-height:1.7; }
-    .announce .sep{ margin:10px 0; border-bottom:1px dashed #ddd; }
-
-    .center { text-align:center; }
+    .form-group { margin-bottom: 16px; }
+    button { padding: 10px 20px; background: #28a745; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+    #timeOptions button { display: block; margin: 5px 0; width: 100%; }
   </style>
 </head>
 <body>
+  <h2>📅 請選擇想要預約的時間</h2>
+  <div id="timeOptions">載入中......載入時間預計5秒</div>
 
-  <!-- 進入前的公告與確認 -->
-  <div id="gate" class="card announce">
-    <h2>【用餐與訂位公告】</h2>
-
-    <p>🍽 <span style="font-size:16px"><strong>用餐費用</strong></span></p>
-    <p style="font-size:14px">
-      ・大朋友（11歲含以上）：1000元/位<br>
-      ・小朋友（10歲含以下）：500元/位<br>
-      ・小小朋友（3歲含以下）：免費
-    </p>
-    <p style="font-size:14px">
-      ▲若有另外加點餐點，將另行計價，<strong>請訂位完成後於LINE群組發送訊息告知老闆</strong>，以便提前備料。
-    </p>
-
-    <div class="sep"></div>
-
-    <p>📌 <span style="font-size:16px"><strong>訂位須知</strong></span></p>
-    <p style="font-size:14px">
-      1️⃣ 本餐廳以「人數」計費，餐點將依實際用餐人數設計搭配。<br>
-      2️⃣ <strong>請於訂位時正確填寫用餐人數（含大人與小孩）</strong>，以免現場核對時造成費用計算不符。<br>
-      3️⃣ 若需更改用餐人數，請於<strong>用餐前48小時</strong>告知，以便廚房準備食材。<br>
-      4️⃣ 因餐點依人數預備，為避免食材浪費，<strong>若當日到場人數少於原訂位人數，將以原訂位人數計價</strong>。<br>
-      5️⃣ 若臨時取消訂位，請儘早通知我們；<strong>逾期未通知可能影響日後訂位權益</strong>。<br>
-      6️⃣ 為維持用餐品質，請<strong>準時入席</strong>；遲到超過15分鐘，餐點將依現場狀況進行安排。<br>
-      7️⃣ <strong>若有特殊飲食需求（如食材過敏）</strong>，請於訂位時事先告知，我們將盡力協助調整。
-    </p>
-
-    <div class="center" style="margin-top:12px;">
-      <button id="enterBtn" class="btn">我已閱讀並同意，開始訂位</button>
+  <form id="bookingForm" class="hidden">
+    <h3>請填寫以下資訊</h3>
+    <div class="form-group">
+      <label>用餐日期</label>
+      <input type="text" name="date" readonly>
     </div>
-  </div>
-
-  <!-- 真正的定位系統 UI（初始隱藏） -->
-  <div id="app" class="card hidden">
-    <h2>📅 請選擇想要預約的時間</h2>
-    <div id="timeOptions" class="muted">載入中……載入時間預計 5 秒</div>
-  </div>
-
-  <div id="formCard" class="card hidden">
-    <form id="bookingForm">
-      <h3>請填寫以下資訊</h3>
-
+    <div class="form-group">
+      <label>用餐時段</label>
+      <input type="text" name="time" readonly>
+    </div>
+    <div class="form-group">
+      <label>訂位大名</label>
+      <input type="text" name="display_name" placeholder="請填寫您的姓名" required>
+    </div>
+    <div class="form-group">
+      <label>Line社群ID</label>
+      <input type="text" name="line_name" placeholder="請填寫您在社群中的名稱" required>
+    </div>
+    <div class="form-group">
+      <label>手機號碼</label>
+      <input type="tel" name="phone" placeholder="請填寫正確號碼，避免無法聯繫" required>
+    </div>
+    <div class="form-group">
       <div class="form-group">
-        <label>用餐日期</label>
-        <input type="text" name="date" readonly>
-      </div>
+  <label>用餐人數</label>
+  <select name="adults" required>
+    <option value="">請選擇大人數量</option>
+    <option value="1">大人(1)</option>
+    <option value="2">大人(2)</option>
+    <option value="3">大人(3)</option>
+    <option value="4">大人(4)</option>
+    <option value="5">大人(5)</option>
+    <option value="6">大人(6)</option>
+    <option value="7">大人(7)</option>
+    <option value="8">大人(8)</option>
+    <option value="9">大人(9)</option>
+    <option value="10">大人(10)</option>
+  </select>
+  <select name="children" required>
+    <option value="0">請選擇小朋友數量(0)</option>
+    <option value="1">小朋友(1)</option>
+    <option value="2">小朋友(2)</option>
+    <option value="3">小朋友(3)</option>
+    <option value="4">小朋友(4)</option>
+    <option value="5">小朋友(5)</option>
+    <option value="6">小朋友(6)</option>
+    <option value="7">小朋友(7)</option>
+    <option value="8">小朋友(8)</option>
+    <option value="9">小朋友(9)</option>
+    <option value="10">小朋友(10)</option>
+  </select>
 
-      <div class="form-group">
-        <label>用餐時段</label>
-        <input type="text" name="time" readonly>
-      </div>
+  <small>總人數請勿超過 10 位</small>
+</div>
+    <div class="form-group">
+      <label>備註</label>
+      <textarea name="note" placeholder="若有小朋友請註記年齡"></textarea>
+    </div>
+    <button type="submit">送出預約</button>
+  </form>
 
-      <div class="form-group">
-        <label>訂位大名</label>
-        <input type="text" name="display_name" placeholder="請填寫您的姓名" required>
-      </div>
-
-      <div class="form-group">
-        <label>Line社群ID</label>
-        <input type="text" name="line_name" placeholder="請填寫您在社群中的名稱" required>
-      </div>
-
-      <div class="form-group">
-        <label>手機號碼</label>
-        <input type="tel" name="phone" placeholder="請填寫正確號碼，避免無法聯繫" required>
-      </div>
-
-      <div class="form-group">
-        <label>用餐人數</label>
-        <select name="adults" required>
-          <option value="">請選擇大人數量</option>
-          <option value="1">大人(1)</option>
-          <option value="2">大人(2)</option>
-          <option value="3">大人(3)</option>
-          <option value="4">大人(4)</option>
-          <option value="5">大人(5)</option>
-          <option value="6">大人(6)</option>
-          <option value="7">大人(7)</option>
-          <option value="8">大人(8)</option>
-          <option value="9">大人(9)</option>
-          <option value="10">大人(10)</option>
-        </select>
-        <select name="children" required>
-          <option value="0">請選擇小朋友數量(0)</option>
-          <option value="1">小朋友(1)</option>
-          <option value="2">小朋友(2)</option>
-          <option value="3">小朋友(3)</option>
-          <option value="4">小朋友(4)</option>
-          <option value="5">小朋友(5)</option>
-          <option value="6">小朋友(6)</option>
-          <option value="7">小朋友(7)</option>
-          <option value="8">小朋友(8)</option>
-          <option value="9">小朋友(9)</option>
-          <option value="10">小朋友(10)</option>
-        </select>
-        <small class="muted">總人數請勿超過 10 位</small>
-      </div>
-
-      <div class="form-group">
-        <label>備註</label>
-        <textarea name="note" placeholder="若有小朋友請註記年齡"></textarea>
-      </div>
-
-      <button type="submit" class="btn">送出預約</button>
-      <div id="resultMsg" class="muted" style="margin-top: 10px;"></div>
-    </form>
-  </div>
+  <div id="resultMsg" style="margin-top: 20px;"></div>
 
   <script>
     const liffId = "2007778847-4d7bwNEV"; // 你的 LIFF ID
     let profile = {};
     let selected = {};
-    let started = false; // 防止重複點擊
 
-    document.getElementById("enterBtn").addEventListener("click", async () => {
-      if (started) return;
-      started = true;
-      document.getElementById("enterBtn").disabled = true;
+    async function init() {
+      await liff.init({ liffId });
+      if (!liff.isLoggedIn()) liff.login();
+      profile = await liff.getProfile();
 
-      // 顯示主畫面、隱藏公告
-      document.getElementById("gate").classList.add("hidden");
-      document.getElementById("app").classList.remove("hidden");
+      const res = await fetch("https://script.google.com/macros/s/AKfycbzFfLFp1nUe75gAAPirzMcH6AaDpHgpI2H90nk518jfZzOQg1k7FZgGSJ0Ob-Il9nOa8A/exec");
+      const times = await res.json();
+      const container = document.getElementById("timeOptions");
+      container.innerHTML = "";
 
-      // 才開始初始化與載入時段
-      await startApp();
-    });
-
-    async function startApp() {
-      try {
-        await liff.init({ liffId });
-        if (!liff.isLoggedIn()) liff.login();
-        profile = await liff.getProfile();
-      } catch (e) {
-        console.error("LIFF 初始化失敗", e);
-        document.getElementById("timeOptions").textContent = "❌ 無法初始化 LIFF，請稍後再試。";
-        return;
-      }
-
-      try {
-        const res = await fetch("https://script.google.com/macros/s/AKfycbzFfLFp1nUe75gAAPirzMcH6AaDpHgpI2H90nk518jfZzOQg1k7FZgGSJ0Ob-Il9nOa8A/exec");
-        const times = await res.json();
-        const container = document.getElementById("timeOptions");
-        container.innerHTML = "";
-
-        if (!Array.isArray(times) || times.length === 0) {
-          container.innerHTML = `
-            <div style="padding: 16px; background: #fffbe7; border: 1px solid #ccc; border-radius: 8px;">
-              <strong>很抱歉，本月訂位皆已全數預定完畢，</strong><br>
-              下個月開放訂位時間，請關注<br>
-              <strong>
-                <a href="https://line.me/ti/g2/d94EbuAl2Ts6wmTg-fM6qr4b7Bwpj6c7MDZ5Ug?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" style="color: #d2691e; text-decoration: underline;">
-                  【北宜32K "狼來了碳烤羊腿"】LINE社群
-                </a>
-              </strong>，謝謝！
-            </div>`;
-          return;
-        }
-
-        times.forEach(t => {
-          const btn = document.createElement("button");
-          btn.textContent = `${t.date} ${t.time}`;
-          btn.onclick = () => {
-            selected = t;
-            document.querySelector('input[name="date"]').value = t.date;
-            document.querySelector('input[name="time"]').value = t.time;
-            document.getElementById("formCard").classList.remove("hidden");
-            document.getElementById("bookingForm").scrollIntoView({ behavior: "smooth", block: "start" });
-          };
-          container.appendChild(btn);
-        });
-      } catch (err) {
-        console.error("載入可預約時段失敗", err);
-        document.getElementById("timeOptions").textContent = "❌ 無法載入資料，請稍後再試。";
-      }
+if (times.length === 0) {
+  container.innerHTML = `
+    <div style="padding: 20px; background: #fffbe7; border: 1px solid #ccc; border-radius: 8px;">
+      <strong>很抱歉，本月訂位皆已全數預定完畢，</strong><br>
+      下個月開放訂位時間，請關注<br>
+      <strong>
+        <a href="https://line.me/ti/g2/d94EbuAl2Ts6wmTg-fM6qr4b7Bwpj6c7MDZ5Ug?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" style="color: #d2691e; text-decoration: underline;">
+          【北宜32K "狼來了碳烤羊腿"】LINE社群
+        </a>
+      </strong>，謝謝！
+    </div>
+  `;
+  return;
+}
+      times.forEach(t => {
+        const btn = document.createElement("button");
+        btn.textContent = `${t.date} ${t.time}`;
+        btn.onclick = () => {
+          selected = t;
+          document.querySelector('input[name="date"]').value = t.date;
+          document.querySelector('input[name="time"]').value = t.time;
+          document.getElementById("bookingForm").classList.remove("hidden");
+          window.scrollTo(0, document.body.scrollHeight);
+        };
+        container.appendChild(btn);
+      });
     }
 
     document.getElementById("bookingForm").addEventListener("submit", async (e) => {
@@ -285,30 +150,20 @@
         index: selected.index
       };
 
-      try {
-        const res = await fetch("https://script.google.com/macros/s/AKfycbzFfLFp1nUe75gAAPirzMcH6AaDpHgpI2H90nk518jfZzOQg1k7FZgGSJ0Ob-Il9nOa8A/exec", {
-          method: "POST",
-          body: JSON.stringify(data)
-        });
-        const result = await res.json();
-        document.getElementById("resultMsg").textContent = result.message;
+      const res = await fetch("https://script.google.com/macros/s/AKfycbzFfLFp1nUe75gAAPirzMcH6AaDpHgpI2H90nk518jfZzOQg1k7FZgGSJ0Ob-Il9nOa8A/exec", {
+        method: "POST",
+        body: JSON.stringify(data)
+      });
 
-        if (result.success) {
-          // 帶參數到 success.html（可用於日曆連結）
-          const params = new URLSearchParams({
-            date: selected.date,
-            time: selected.time,
-            adults: String(adults),
-            children: String(children),
-            phone: form.get("phone") || ""
-          });
-          window.location.href = `https://coolka-hsu.github.io/line-booking-Wolf/success.html?${params.toString()}`;
-        }
-      } catch (err) {
-        console.error("送出預約錯誤", err);
-        document.getElementById("resultMsg").textContent = "❌ 發生錯誤，請稍後再試";
-      }
+      const result = await res.json();
+      document.getElementById("resultMsg").textContent = result.message;
+     if (result.success) {
+      window.location.href = "https://coolka-hsu.github.io/line-booking-Wolf/success.html";
+    }
+
     });
+
+    init();
   </script>
 </body>
 </html>
