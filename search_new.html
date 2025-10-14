@@ -36,7 +36,7 @@
     .row { margin: .35rem 0; }
     .label { color:#555; display:inline-block; min-width: 6.5em; }
     .badge { display:inline-block; padding:2px 8px; border-radius:999px; background:#f0f0f0; font-size:.85rem; }
-    .actions { display:flex; gap:.6rem; flex-wrap:wrap; margin-top:.6rem; }
+    .actions { margin-top:.6rem; }
     .link-btn {
       display:inline-block; padding:.5rem .8rem; border-radius:8px; text-decoration:none;
       background:#efefef;
@@ -60,7 +60,7 @@
 
   <script>
     const DATA_URL = 'https://coolka-hsu.github.io/line-booking-Wolf/search_data.json';
-    const CAL_TITLE = '北宜32K 訂位提醒';
+    const CAL_TITLE = '北宜32K 狼來了碳烤羊腿 用餐提醒';
     const CAL_DETAILS = '📌 阿義提醒您：這是您在【北宜32K 狼來了碳烤羊腿】的訂位。建議提前抵達！🔔 提醒建議：請將預設的「提前10分鐘通知」改為「提前２天通知」！';
     const CAL_LOCATION = '232新北市坪林區北宜公路七段32K';
     let allData = [];
@@ -69,14 +69,13 @@
     const errorEl = document.getElementById('error');
     const resultEl = document.getElementById('result');
 
-    // 只取數字，允許使用者輸入 0912-345-678 / 0912345678 / 0912 345 678
+    // 格式化手機：移除空白、破折號
     function normalizePhone(str) {
       return (str || '').replace(/\D+/g, '');
     }
 
-    // 解析「YYYY/MM/DD」與「HH:mm」或「上午/下午 h:mm」→ 回傳 Date
+    // 將日期與時間解析成 JS Date
     function parseDateTime(dateStr, timeStr) {
-      // date: 2025/10/13 或 2025-10-13
       const m = dateStr.trim().replace(/-/g,'/').match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
       if (!m) return null;
       let [_, y, mo, d] = m;
@@ -85,7 +84,6 @@
       let h = 0, min = 0;
       const t = timeStr.trim();
 
-      // 支援「上午/下午」與「AM/PM」
       const zh = t.match(/^(上午|下午)\s*(\d{1,2})(?::(\d{2}))?$/);
       const en = t.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/i);
       const plain = t.match(/^(\d{1,2}):(\d{2})$/);
@@ -102,22 +100,18 @@
       } else if (plain) {
         h = +plain[1]; min = +plain[2];
       } else {
-        // 最後嘗試 Date 解析（可能不一致）
         const dt = new Date(`${y}/${mo}/${d} ${t}`);
         if (!isNaN(dt)) return dt;
         return null;
       }
-
       return new Date(y, mo - 1, d, h, min, 0, 0);
     }
 
-    // 格式：YYYYMMDDTHHmmss
     function fmtICS(dt) {
       const pad = n => String(n).padStart(2, '0');
       return `${dt.getFullYear()}${pad(dt.getMonth()+1)}${pad(dt.getDate())}T${pad(dt.getHours())}${pad(dt.getMinutes())}00`;
     }
 
-    // 建 Google Calendar 連結（2.5 小時行程）
     function createGCalLink(date, time) {
       const startDt = parseDateTime(date, time);
       if (!startDt) return '#';
@@ -132,39 +126,6 @@
       return `https://calendar.google.com/calendar/r/eventedit?${params.toString()}`;
     }
 
-    // 下載 .ics（給非 Google Calendar 使用者）
-    function downloadICS(item) {
-      const startDt = parseDateTime(item.date, item.time);
-      if (!startDt) return;
-      const endDt = new Date(startDt.getTime() + 2.5 * 60 * 60 * 1000);
-
-      const lines = [
-        'BEGIN:VCALENDAR',
-        'VERSION:2.0',
-        'PRODID:-//Booking Lookup//TW',
-        'CALSCALE:GREGORIAN',
-        'METHOD:PUBLISH',
-        'BEGIN:VEVENT',
-        `UID:${crypto.randomUUID()}`,
-        `DTSTAMP:${fmtICS(new Date())}`,
-        `DTSTART:${fmtICS(startDt)}`,
-        `DTEND:${fmtICS(endDt)}`,
-        `SUMMARY:${CAL_TITLE}`,
-        `DESCRIPTION:${CAL_DETAILS}`,
-        `LOCATION:${CAL_LOCATION}`,
-        'END:VEVENT',
-        'END:VCALENDAR'
-      ];
-      const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `booking_${item.date}_${item.time}.ics`;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    // 渲染多筆結果
     function renderResults(items, phone) {
       const normalized = normalizePhone(phone);
       resultEl.innerHTML = '';
@@ -191,18 +152,14 @@
           <div class="row"><span class="label">📝 備註：</span>${it.note || '無'}</div>
           <div class="actions">
             <a class="link-btn" href="${createGCalLink(it.date, it.time)}" target="_blank">📆 加到 Google 日曆</a>
-            <a class="link-btn" href="javascript:void(0)" data-ics="1">📥 下載 .ics</a>
           </div>
         `;
-        // 綁定 .ics
-        card.querySelector('[data-ics]').addEventListener('click', () => downloadICS(it));
         wrap.appendChild(card);
       });
 
       resultEl.appendChild(wrap);
     }
 
-    // 載入資料
     async function loadData() {
       try {
         const res = await fetch(DATA_URL, { cache: 'no-store' });
@@ -214,7 +171,6 @@
       }
     }
 
-    // 事件：查詢
     document.getElementById('searchForm').addEventListener('submit', e => {
       e.preventDefault();
       errorEl.textContent = '';
@@ -229,7 +185,6 @@
         return;
       }
 
-      // 嚴格用「完整號碼」比對；若想開放「只輸入末三碼」查詢，可改成 endsWith(normalized)。
       const matches = allData.filter(x => normalizePhone(x.phone) === normalized);
 
       if (matches.length === 0) {
@@ -237,7 +192,6 @@
         return;
       }
 
-      // 依日期時間排序（可解析的優先）
       matches.sort((a, b) => {
         const da = parseDateTime(a.date, a.time);
         const db = parseDateTime(b.date, b.time);
