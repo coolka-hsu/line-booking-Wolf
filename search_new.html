@@ -73,6 +73,7 @@
     const errorEl = document.getElementById('error');
     const resultEl = document.getElementById('result');
 
+    /* ===== 工具 ===== */
     function normalizePhone(str) {
       return (str || '').replace(/\D+/g, '');
     }
@@ -84,7 +85,7 @@
       y = +y; mo = +mo; d = +d;
 
       let h = 0, min = 0;
-      const t = timeStr.trim();
+      const t = (timeStr||'').trim();
 
       const zh = t.match(/^(上午|下午)\s*(\d{1,2})(?::(\d{2}))?$/);
       const en = t.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/i);
@@ -114,20 +115,63 @@
       return `${dt.getFullYear()}${pad(dt.getMonth()+1)}${pad(dt.getDate())}T${pad(dt.getHours())}${pad(dt.getMinutes())}00`;
     }
 
-    function createGCalLink(date, time) {
+    /* ===== 產生 Google 日曆連結（網頁版） ===== */
+    function createWebGCalLink(date, time) {
       const startDt = parseDateTime(date, time);
       if (!startDt) return '#';
       const endDt = new Date(startDt.getTime() + 2.5 * 60 * 60 * 1000);
-
       const params = new URLSearchParams({
+        action: 'TEMPLATE',
         text: CAL_TITLE,
         dates: `${fmtICS(startDt)}/${fmtICS(endDt)}`,
         details: CAL_DETAILS,
         location: CAL_LOCATION
       });
-      return `https://calendar.google.com/calendar/r/eventedit?${params.toString()}`;
+      return `https://calendar.google.com/calendar/render?${params.toString()}`;
     }
 
+    /* ===== iOS 深連結（有安裝 App 會直接帶起）===== */
+    function createIOSDeepLink(date, time) {
+      const startDt = parseDateTime(date, time);
+      if (!startDt) return null;
+      const endDt = new Date(startDt.getTime() + 2.5 * 60 * 60 * 1000);
+      const params = new URLSearchParams({
+        action: 'create',
+        text: CAL_TITLE,
+        dates: `${fmtICS(startDt)}/${fmtICS(endDt)}`,
+        details: CAL_DETAILS,
+        location: CAL_LOCATION
+      });
+      return `comgooglecalendar://?${params.toString()}`;
+    }
+
+    /* ===== 按哪一筆就開哪一筆：優先 App，否則退回網頁 ===== */
+    function openCalendar(date, time) {
+      const ua = navigator.userAgent || '';
+      const isIOS = /iPad|iPhone|iPod/i.test(ua);
+      const webUrl = createWebGCalLink(date, time);
+
+      if (isIOS) {
+        const iosUrl = createIOSDeepLink(date, time);
+        if (iosUrl) {
+          // 嘗試喚起 App；若無 App，800ms 後退回網頁
+          const ts = Date.now();
+          window.location.href = iosUrl;
+          setTimeout(() => {
+            // 若沒有跳走（沒有安裝 App），再開網頁版
+            if (Date.now() - ts < 1800 && webUrl && webUrl !== '#') {
+              window.open(webUrl, '_blank');
+            }
+          }, 800);
+          return;
+        }
+      }
+
+      // Android 與其他：用網頁連結（多數情況下 Chrome/Android 也會引導 App）
+      if (webUrl && webUrl !== '#') window.open(webUrl, '_blank');
+    }
+
+    /* ===== 渲染結果卡片 ===== */
     function renderResults(items, phone) {
       const normalized = normalizePhone(phone);
       resultEl.innerHTML = '';
@@ -164,6 +208,7 @@
       resultEl.appendChild(wrap);
     }
 
+    /* ===== 資料載入 ===== */
     async function loadData() {
       try {
         const res = await fetch(DATA_URL, { cache: 'no-store' });
@@ -175,13 +220,14 @@
       }
     }
 
+    /* ===== 事件：查詢送出 ===== */
     document.getElementById('searchForm').addEventListener('submit', e => {
       e.preventDefault();
       errorEl.textContent = '';
       resultEl.style.display = 'none';
       resultEl.innerHTML = '';
 
-      // 送出後讓輸入框失焦，iOS 會把縮放恢復
+      // 送出後讓輸入框失焦，iOS 會把縮放恢復原狀
       document.getElementById('phone').blur();
 
       const phoneInput = document.getElementById('phone').value.trim();
@@ -211,13 +257,12 @@
       renderResults(matches, normalized);
     });
 
-    // 事件代理：點哪一筆就用該筆的 date/time 產生 Google 日曆連結
+    /* ===== 事件代理：點哪一筆就開該筆（日曆 App 優先，否則開網頁） ===== */
     document.addEventListener('click', (e) => {
       const btn = e.target.closest('[data-gcal]');
       if (!btn) return;
       const { date, time } = btn.dataset;
-      const url = createGCalLink(date, time);
-      if (url && url !== '#') window.open(url, '_blank');
+      openCalendar(date, time);
     });
 
     loadData();
