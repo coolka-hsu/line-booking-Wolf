@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>查詢我的訂位</title>
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background-color: #f5f5f5;
+      padding: 2rem;
+      color: #333;
+    }
+    h1 { font-size: 1.8rem; margin-bottom: 1rem; }
+    form {
+      background: #fff; padding: 1.5rem; border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1); max-width: 520px; margin: 0 auto 1rem;
+    }
+    label { display: block; margin-top: 0.5rem; font-weight: bold; }
+    input[type="tel"]{
+      width: 100%; padding: 0.5rem; margin-top: 0.3rem;
+      border: 1px solid #ccc; border-radius: 5px;
+    }
+    button {
+      margin-top: 1rem; padding: 0.7rem 1.2rem; background-color: #4CAF50;
+      color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem;
+    }
+    .error { color: #d93025; margin-top: 0.8rem; }
+    .muted { color: #666; font-size: .95rem; }
+    .panel, .result {
+      max-width: 760px; margin: 1rem auto; background: #fff; padding: 1.2rem;
+      border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+    .card { border: 1px solid #eee; border-radius: 10px; padding: 12px; }
+    .row { margin: .35rem 0; }
+    .label { color:#555; display:inline-block; min-width: 6.5em; }
+    .badge { display:inline-block; padding:2px 8px; border-radius:999px; background:#f0f0f0; font-size:.85rem; }
+    .actions { display:flex; gap:.6rem; flex-wrap:wrap; margin-top:.6rem; }
+    .link-btn {
+      display:inline-block; padding:.5rem .8rem; border-radius:8px; text-decoration:none;
+      background:#efefef;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 查詢我的訂位</h1>
+
+  <form id="searchForm">
+    <div class="muted" id="loadState">資料載入中…</div>
+
+    <label for="phone">手機號碼：</label>
+    <input type="tel" id="phone" placeholder="請輸入您的完整手機號碼（符號可略）" required />
+
+    <button type="submit">查詢</button>
+    <div class="error" id="error"></div>
+  </form>
+
+  <div class="result" id="result" style="display:none;"></div>
+
+  <script>
+    const DATA_URL = 'https://coolka-hsu.github.io/line-booking-Wolf/search_data.json';
+    const CAL_TITLE = '北宜32K 訂位提醒';
+    const CAL_DETAILS = '📌 阿義提醒您：這是您在【北宜32K 狼來了碳烤羊腿】的訂位。建議提前抵達！🔔 提醒建議：請將預設的「提前10分鐘通知」改為「提前２天通知」！';
+    const CAL_LOCATION = '232新北市坪林區北宜公路七段32K';
+    let allData = [];
+
+    const loadStateEl = document.getElementById('loadState');
+    const errorEl = document.getElementById('error');
+    const resultEl = document.getElementById('result');
+
+    // 只取數字，允許使用者輸入 0912-345-678 / 0912345678 / 0912 345 678
+    function normalizePhone(str) {
+      return (str || '').replace(/\D+/g, '');
+    }
+
+    // 解析「YYYY/MM/DD」與「HH:mm」或「上午/下午 h:mm」→ 回傳 Date
+    function parseDateTime(dateStr, timeStr) {
+      // date: 2025/10/13 或 2025-10-13
+      const m = dateStr.trim().replace(/-/g,'/').match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+      if (!m) return null;
+      let [_, y, mo, d] = m;
+      y = +y; mo = +mo; d = +d;
+
+      let h = 0, min = 0;
+      const t = timeStr.trim();
+
+      // 支援「上午/下午」與「AM/PM」
+      const zh = t.match(/^(上午|下午)\s*(\d{1,2})(?::(\d{2}))?$/);
+      const en = t.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/i);
+      const plain = t.match(/^(\d{1,2}):(\d{2})$/);
+
+      if (zh) {
+        h = +zh[2]; min = +(zh[3] || 0);
+        if (zh[1] === '下午' && h < 12) h += 12;
+        if (zh[1] === '上午' && h === 12) h = 0;
+      } else if (en) {
+        h = +en[1]; min = +(en[2] || 0);
+        const ap = en[3].toUpperCase();
+        if (ap === 'PM' && h < 12) h += 12;
+        if (ap === 'AM' && h === 12) h = 0;
+      } else if (plain) {
+        h = +plain[1]; min = +plain[2];
+      } else {
+        // 最後嘗試 Date 解析（可能不一致）
+        const dt = new Date(`${y}/${mo}/${d} ${t}`);
+        if (!isNaN(dt)) return dt;
+        return null;
+      }
+
+      return new Date(y, mo - 1, d, h, min, 0, 0);
+    }
+
+    // 格式：YYYYMMDDTHHmmss
+    function fmtICS(dt) {
+      const pad = n => String(n).padStart(2, '0');
+      return `${dt.getFullYear()}${pad(dt.getMonth()+1)}${pad(dt.getDate())}T${pad(dt.getHours())}${pad(dt.getMinutes())}00`;
+    }
+
+    // 建 Google Calendar 連結（2.5 小時行程）
+    function createGCalLink(date, time) {
+      const startDt = parseDateTime(date, time);
+      if (!startDt) return '#';
+      const endDt = new Date(startDt.getTime() + 2.5 * 60 * 60 * 1000);
+
+      const params = new URLSearchParams({
+        text: CAL_TITLE,
+        dates: `${fmtICS(startDt)}/${fmtICS(endDt)}`,
+        details: CAL_DETAILS,
+        location: CAL_LOCATION
+      });
+      return `https://calendar.google.com/calendar/r/eventedit?${params.toString()}`;
+    }
+
+    // 下載 .ics（給非 Google Calendar 使用者）
+    function downloadICS(item) {
+      const startDt = parseDateTime(item.date, item.time);
+      if (!startDt) return;
+      const endDt = new Date(startDt.getTime() + 2.5 * 60 * 60 * 1000);
+
+      const lines = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Booking Lookup//TW',
+        'CALSCALE:GREGORIAN',
+        'METHOD:PUBLISH',
+        'BEGIN:VEVENT',
+        `UID:${crypto.randomUUID()}`,
+        `DTSTAMP:${fmtICS(new Date())}`,
+        `DTSTART:${fmtICS(startDt)}`,
+        `DTEND:${fmtICS(endDt)}`,
+        `SUMMARY:${CAL_TITLE}`,
+        `DESCRIPTION:${CAL_DETAILS}`,
+        `LOCATION:${CAL_LOCATION}`,
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ];
+      const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `booking_${item.date}_${item.time}.ics`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // 渲染多筆結果
+    function renderResults(items, phone) {
+      const normalized = normalizePhone(phone);
+      resultEl.innerHTML = '';
+      resultEl.style.display = 'block';
+
+      const header = document.createElement('div');
+      header.className = 'panel';
+      header.innerHTML = `<div><strong>查詢門號：</strong>${normalized}　<span class="badge">共 ${items.length} 筆</span></div>`;
+      resultEl.appendChild(header);
+
+      const wrap = document.createElement('div');
+      wrap.className = 'cards';
+
+      items.forEach(it => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="row"><span class="label">📅 訂位日期：</span>${it.date}</div>
+          <div class="row"><span class="label">⏰ 用餐時段：</span>${it.time}</div>
+          <div class="row"><span class="label">🧑 訂位大名：</span>${it.display_name || ''} 先生/小姐</div>
+          <div class="row"><span class="label">🙍‍♂️ LINE名稱：</span>${it.line_name || ''}</div>
+          <div class="row"><span class="label">📞 手機號碼：</span>${it.phone}</div>
+          <div class="row"><span class="label">👨‍👩‍👧‍👦 人數：</span>${it.people}</div>
+          <div class="row"><span class="label">📝 備註：</span>${it.note || '無'}</div>
+          <div class="actions">
+            <a class="link-btn" href="${createGCalLink(it.date, it.time)}" target="_blank">📆 加到 Google 日曆</a>
+            <a class="link-btn" href="javascript:void(0)" data-ics="1">📥 下載 .ics</a>
+          </div>
+        `;
+        // 綁定 .ics
+        card.querySelector('[data-ics]').addEventListener('click', () => downloadICS(it));
+        wrap.appendChild(card);
+      });
+
+      resultEl.appendChild(wrap);
+    }
+
+    // 載入資料
+    async function loadData() {
+      try {
+        const res = await fetch(DATA_URL, { cache: 'no-store' });
+        allData = await res.json();
+        loadStateEl.textContent = '資料已載入，可輸入手機號碼查詢。';
+      } catch (e) {
+        console.error(e);
+        loadStateEl.textContent = '資料載入失敗，請稍後再試。';
+      }
+    }
+
+    // 事件：查詢
+    document.getElementById('searchForm').addEventListener('submit', e => {
+      e.preventDefault();
+      errorEl.textContent = '';
+      resultEl.style.display = 'none';
+      resultEl.innerHTML = '';
+
+      const phoneInput = document.getElementById('phone').value.trim();
+      const normalized = normalizePhone(phoneInput);
+
+      if (!normalized) {
+        errorEl.textContent = '請輸入手機號碼。';
+        return;
+      }
+
+      // 嚴格用「完整號碼」比對；若想開放「只輸入末三碼」查詢，可改成 endsWith(normalized)。
+      const matches = allData.filter(x => normalizePhone(x.phone) === normalized);
+
+      if (matches.length === 0) {
+        errorEl.textContent = '查無此手機號碼的訂位紀錄。';
+        return;
+      }
+
+      // 依日期時間排序（可解析的優先）
+      matches.sort((a, b) => {
+        const da = parseDateTime(a.date, a.time);
+        const db = parseDateTime(b.date, b.time);
+        if (da && db) return da - db;
+        if (da && !db) return -1;
+        if (!da && db) return 1;
+        return 0;
+      });
+
+      renderResults(matches, normalized);
+    });
+
+    loadData();
+  </script>
+</body>
+</html>
