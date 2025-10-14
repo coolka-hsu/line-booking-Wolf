@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>查詢我的訂位</title>
   <style>
+    /* 防 iOS Safari 輸入時自動放大 */
+    html { -webkit-text-size-adjust: 100%; }
+    input[type="tel"], button, select { font-size: 16px; }
+
     body {
       font-family: 'Noto Sans TC', sans-serif;
       background-color: #f5f5f5;
@@ -23,7 +27,7 @@
     }
     button {
       margin-top: 1rem; padding: 0.7rem 1.2rem; background-color: #4CAF50;
-      color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem;
+      color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;
     }
     .error { color: #d93025; margin-top: 0.8rem; }
     .muted { color: #666; font-size: .95rem; }
@@ -39,7 +43,7 @@
     .actions { margin-top:.6rem; }
     .link-btn {
       display:inline-block; padding:.5rem .8rem; border-radius:8px; text-decoration:none;
-      background:#efefef;
+      background:#efefef; border: none; cursor: pointer;
     }
   </style>
 </head>
@@ -69,12 +73,10 @@
     const errorEl = document.getElementById('error');
     const resultEl = document.getElementById('result');
 
-    // 格式化手機：移除空白、破折號
     function normalizePhone(str) {
       return (str || '').replace(/\D+/g, '');
     }
 
-    // 將日期與時間解析成 JS Date
     function parseDateTime(dateStr, timeStr) {
       const m = dateStr.trim().replace(/-/g,'/').match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
       if (!m) return null;
@@ -151,7 +153,9 @@
           <div class="row"><span class="label">👨‍👩‍👧‍👦 人數：</span>${it.people}</div>
           <div class="row"><span class="label">📝 備註：</span>${it.note || '無'}</div>
           <div class="actions">
-            <a class="link-btn" href="${createGCalLink(it.date, it.time)}" target="_blank">📆 加到 Google 日曆</a>
+            <button type="button" class="link-btn" data-gcal="1" data-date="${it.date}" data-time="${it.time}">
+              📆 加到 Google 日曆
+            </button>
           </div>
         `;
         wrap.appendChild(card);
@@ -176,6 +180,9 @@
       errorEl.textContent = '';
       resultEl.style.display = 'none';
       resultEl.innerHTML = '';
+
+      // 送出後讓輸入框失焦，iOS 會把縮放恢復
+      document.getElementById('phone').blur();
 
       const phoneInput = document.getElementById('phone').value.trim();
       const normalized = normalizePhone(phoneInput);
@@ -202,6 +209,15 @@
       });
 
       renderResults(matches, normalized);
+    });
+
+    // 事件代理：點哪一筆就用該筆的 date/time 產生 Google 日曆連結
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-gcal]');
+      if (!btn) return;
+      const { date, time } = btn.dataset;
+      const url = createGCalLink(date, time);
+      if (url && url !== '#') window.open(url, '_blank');
     });
 
     loadData();
