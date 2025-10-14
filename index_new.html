@@ -83,8 +83,8 @@
       border-radius: 10px;
       cursor: pointer;
       text-align: left;
-      font-size: 18px;            /* ← [可調整1] 時間按鈕字體大小 */
-      line-height: 1.5;           /* ← [可調整2] 行距 */
+      font-size: 20px;            /* ← [可調整1] 時間按鈕字體大小 */
+      line-height: 2;           /* ← [可調整2] 行距 */
     }
     #timeOptions.compact button{ font-size:16px; padding:12px; } /* 需要緊湊時加上 #timeOptions.compact */
     #timeOptions button:hover{ border-color:#b2bec3; }
@@ -105,30 +105,32 @@
 
   <!-- 進入前的公告與確認 -->
   <div id="gate" class="card announce">
-    <h2>【用餐與訂位公告】</h2>
+<h2>【用餐與訂位公告】</h2>
 
-    <p>🍽 <span style="font-size:16px"><strong>用餐費用</strong></span></p>
-    <p style="font-size:14px">
-      ・大朋友（11歲含以上）：1000元/位<br>
-      ・小朋友（10歲含以下）：500元/位<br>
-      ・小小朋友（3歲含以下）：免費
-    </p>
-    <p style="font-size:14px">
-      ▲若有另外加點餐點，將另行計價，<strong>請訂位完成後於LINE群組發送訊息告知老闆</strong>，以便提前備料。
-    </p>
+<p>🍽 <span style="font-size:16px"><strong>用餐費用</strong></span></p>
 
-    <div class="sep"></div>
+<p><span style="font-size:14px">・大朋友（11歲含以上）：1000元/位<br />
+・小朋友（10歲含以下）：500元/位<br />
+・小小朋友（3歲含以下）：免費</span></p>
 
-    <p>📌 <span style="font-size:16px"><strong>訂位須知</strong></span></p>
-    <p style="font-size:14px">
-      1️⃣ 本餐廳以「人數」計費，餐點將依實際用餐人數設計搭配。<br>
-      2️⃣ <strong>請於訂位時正確填寫用餐人數（含大人與小孩）</strong>，以免現場核對時造成費用計算不符。<br>
-      3️⃣ 若需更改用餐人數，請於<strong>用餐前48小時</strong>告知，以便廚房準備食材。<br>
-      4️⃣ 因餐點依人數預備，為避免食材浪費，<strong>若當日到場人數少於原訂位人數，將以原訂位人數計價</strong>。<br>
-      5️⃣ 若臨時取消訂位，請儘早通知我們；<strong>逾期未通知可能影響日後訂位權益</strong>。<br>
-      6️⃣ 為維持用餐品質，請<strong>準時入席</strong>；遲到超過15分鐘，餐點將依現場狀況進行安排。<br>
-      7️⃣ <strong>若有特殊飲食需求（如食材過敏）</strong>，請於訂位時事先告知，我們將盡力協助調整。
-    </p>
+<p><span style="font-size:14px">▲若有另外加點餐點，將另行計價，<strong>請訂位完成後於LINE群組發送訊息告知老闆</strong>，以便提前備料。</span><br />
+<br />
+&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</p>
+
+<p>📌<span style="font-size:16px"> <strong>訂位須知</strong></span></p>
+
+<p><span style="font-size:14px">1️⃣ 本餐廳以「人數」計費，餐點將依實際用餐人數設計搭配。<br />
+2️⃣ <strong>請於訂位時正確填寫用餐人數（含大人與小孩）</strong>，以免現場核對時造成費用計算不符。<br />
+3️⃣ 若需更改用餐人數，請於<strong>用餐前48小時</strong>告知，以便廚房準備食材。<br />
+4️⃣ 因餐點依人數預備，為避免食材浪費，<strong>若當日到場人數少於原訂位人數，將以原訂位人數計價</strong>。<br />
+5️⃣ 若臨時取消訂位，請儘早通知我們；<strong>逾期未通知可能影響日後訂位權益</strong>。<br />
+6️⃣ 為維持用餐品質，請<strong>準時入席</strong>；遲到超過15分鐘，餐點將依現場狀況進行安排。<br />
+7️⃣ <strong>若有特殊飲食需求（如食材過敏）</strong>，請於訂位時事先告知，我們將盡力協助調整。</span></p>
+
+<p>&nbsp;</p>
+
+<p><span style="color:#cc0000"><span style="font-size:14px">※因系統同步時間差，可能出現重複訂位情形，實際訂位以餐廳確認為主。</span></span></p>
+
 
     <div class="center" style="margin-top:12px;">
       <!-- [變更4]：放大兩級：新增 btn-xl 或 btn-xxl 皆可 -->
@@ -139,7 +141,7 @@
   <!-- 真正的定位系統 UI（初始隱藏） -->
   <div id="app" class="card hidden">
     <h2>📅 請選擇想要預約的時間</h2>
-    <div id="timeOptions" class="muted">載入中……載入時間預計 5 秒</div>
+    <div id="timeOptions" class="muted">載入中……請稍後</div>
   </div>
 
   <div id="formCard" class="card hidden">
@@ -209,7 +211,7 @@
 
       <!-- [變更5]：送出按鈕放大兩級並置中 -->
       <div class="center">
-        <button type="submit" class="btn btn-xxl" id="submitBtn">送出預約</button>
+        <button type="submit" class="btn btn-xl" id="submitBtn">送出預約</button>
       </div>
 
       <div id="resultMsg" class="muted" style="margin-top: 10px;"></div>
