@@ -40,11 +40,6 @@
     .row { margin: .35rem 0; }
     .label { color:#555; display:inline-block; min-width: 6.5em; }
     .badge { display:inline-block; padding:2px 8px; border-radius:999px; background:#f0f0f0; font-size:.85rem; }
-    .actions { margin-top:.6rem; }
-    .link-btn {
-      display:inline-block; padding:.5rem .8rem; border-radius:8px; text-decoration:none;
-      background:#efefef; border: none; cursor: pointer;
-    }
   </style>
 </head>
 <body>
@@ -64,20 +59,18 @@
 
   <script>
     const DATA_URL = 'https://coolka-hsu.github.io/line-booking-Wolf/search_data.json';
-    const CAL_TITLE = '北宜32K 狼來了碳烤羊腿 用餐提醒';
-    const CAL_DETAILS = '📌 阿義提醒您：這是您在【北宜32K 狼來了碳烤羊腿】的訂位。建議提前抵達！🔔 提醒建議：請將預設的「提前10分鐘通知」改為「提前２天通知」！';
-    const CAL_LOCATION = '232新北市坪林區北宜公路七段32K';
     let allData = [];
 
     const loadStateEl = document.getElementById('loadState');
     const errorEl = document.getElementById('error');
     const resultEl = document.getElementById('result');
 
-    /* ===== 工具 ===== */
+    // 手機格式化：移除空白與符號
     function normalizePhone(str) {
       return (str || '').replace(/\D+/g, '');
     }
 
+    // 將日期與時間解析成 JS Date（供排序）
     function parseDateTime(dateStr, timeStr) {
       const m = dateStr.trim().replace(/-/g,'/').match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
       if (!m) return null;
@@ -85,7 +78,7 @@
       y = +y; mo = +mo; d = +d;
 
       let h = 0, min = 0;
-      const t = (timeStr||'').trim();
+      const t = (timeStr || '').trim();
 
       const zh = t.match(/^(上午|下午)\s*(\d{1,2})(?::(\d{2}))?$/);
       const en = t.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/i);
@@ -110,68 +103,7 @@
       return new Date(y, mo - 1, d, h, min, 0, 0);
     }
 
-    function fmtICS(dt) {
-      const pad = n => String(n).padStart(2, '0');
-      return `${dt.getFullYear()}${pad(dt.getMonth()+1)}${pad(dt.getDate())}T${pad(dt.getHours())}${pad(dt.getMinutes())}00`;
-    }
-
-    /* ===== 產生 Google 日曆連結（網頁版） ===== */
-    function createWebGCalLink(date, time) {
-      const startDt = parseDateTime(date, time);
-      if (!startDt) return '#';
-      const endDt = new Date(startDt.getTime() + 2.5 * 60 * 60 * 1000);
-      const params = new URLSearchParams({
-        action: 'TEMPLATE',
-        text: CAL_TITLE,
-        dates: `${fmtICS(startDt)}/${fmtICS(endDt)}`,
-        details: CAL_DETAILS,
-        location: CAL_LOCATION
-      });
-      return `https://calendar.google.com/calendar/render?${params.toString()}`;
-    }
-
-    /* ===== iOS 深連結（有安裝 App 會直接帶起）===== */
-    function createIOSDeepLink(date, time) {
-      const startDt = parseDateTime(date, time);
-      if (!startDt) return null;
-      const endDt = new Date(startDt.getTime() + 2.5 * 60 * 60 * 1000);
-      const params = new URLSearchParams({
-        action: 'create',
-        text: CAL_TITLE,
-        dates: `${fmtICS(startDt)}/${fmtICS(endDt)}`,
-        details: CAL_DETAILS,
-        location: CAL_LOCATION
-      });
-      return `comgooglecalendar://?${params.toString()}`;
-    }
-
-    /* ===== 按哪一筆就開哪一筆：優先 App，否則退回網頁 ===== */
-    function openCalendar(date, time) {
-      const ua = navigator.userAgent || '';
-      const isIOS = /iPad|iPhone|iPod/i.test(ua);
-      const webUrl = createWebGCalLink(date, time);
-
-      if (isIOS) {
-        const iosUrl = createIOSDeepLink(date, time);
-        if (iosUrl) {
-          // 嘗試喚起 App；若無 App，800ms 後退回網頁
-          const ts = Date.now();
-          window.location.href = iosUrl;
-          setTimeout(() => {
-            // 若沒有跳走（沒有安裝 App），再開網頁版
-            if (Date.now() - ts < 1800 && webUrl && webUrl !== '#') {
-              window.open(webUrl, '_blank');
-            }
-          }, 800);
-          return;
-        }
-      }
-
-      // Android 與其他：用網頁連結（多數情況下 Chrome/Android 也會引導 App）
-      if (webUrl && webUrl !== '#') window.open(webUrl, '_blank');
-    }
-
-    /* ===== 渲染結果卡片 ===== */
+    // 渲染結果
     function renderResults(items, phone) {
       const normalized = normalizePhone(phone);
       resultEl.innerHTML = '';
@@ -196,11 +128,6 @@
           <div class="row"><span class="label">📞 手機號碼：</span>${it.phone}</div>
           <div class="row"><span class="label">👨‍👩‍👧‍👦 人數：</span>${it.people}</div>
           <div class="row"><span class="label">📝 備註：</span>${it.note || '無'}</div>
-          <div class="actions">
-            <button type="button" class="link-btn" data-gcal="1" data-date="${it.date}" data-time="${it.time}">
-              📆 加到 Google 日曆
-            </button>
-          </div>
         `;
         wrap.appendChild(card);
       });
@@ -208,7 +135,7 @@
       resultEl.appendChild(wrap);
     }
 
-    /* ===== 資料載入 ===== */
+    // 載入資料
     async function loadData() {
       try {
         const res = await fetch(DATA_URL, { cache: 'no-store' });
@@ -220,14 +147,14 @@
       }
     }
 
-    /* ===== 事件：查詢送出 ===== */
+    // 查詢送出
     document.getElementById('searchForm').addEventListener('submit', e => {
       e.preventDefault();
       errorEl.textContent = '';
       resultEl.style.display = 'none';
       resultEl.innerHTML = '';
 
-      // 送出後讓輸入框失焦，iOS 會把縮放恢復原狀
+      // 送出後讓輸入框失焦，iOS 會把縮放恢復
       document.getElementById('phone').blur();
 
       const phoneInput = document.getElementById('phone').value.trim();
@@ -255,14 +182,6 @@
       });
 
       renderResults(matches, normalized);
-    });
-
-    /* ===== 事件代理：點哪一筆就開該筆（日曆 App 優先，否則開網頁） ===== */
-    document.addEventListener('click', (e) => {
-      const btn = e.target.closest('[data-gcal]');
-      if (!btn) return;
-      const { date, time } = btn.dataset;
-      openCalendar(date, time);
     });
 
     loadData();
