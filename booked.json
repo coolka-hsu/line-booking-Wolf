@@ -124,5 +124,17 @@
     "time": "11:30",
     "line_name": "Sedona",
     "phone_last3": "194"
+  },
+  {
+    "date": "2025/12/06 (六)",
+    "time": "11:30",
+    "line_name": "Ruins",
+    "phone_last3": "903"
+  },
+  {
+    "date": "2025/11/23 (日)",
+    "time": "11:30",
+    "line_name": "敏媛",
+    "phone_last3": "645"
   }
 ]
