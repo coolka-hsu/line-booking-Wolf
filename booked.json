@@ -220,11 +220,5 @@
     "time": "12:30",
     "line_name": "Emma Wu",
     "phone_last3": "779"
-  },
-  {
-    "date": "用餐日期",
-    "time": "用餐時段",
-    "line_name": "LINE社群ID",
-    "phone_last3": "電話"
   }
 ]
