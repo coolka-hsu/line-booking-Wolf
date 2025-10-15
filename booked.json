@@ -100,5 +100,17 @@
     "time": "12:30",
     "line_name": "Kpt",
     "phone_last3": "377"
+  },
+  {
+    "date": "2025/12/20 (六)",
+    "time": "12:30",
+    "line_name": "薇雁",
+    "phone_last3": "561"
+  },
+  {
+    "date": "2025/11/30 (日)",
+    "time": "12:30",
+    "line_name": "Goat",
+    "phone_last3": "178"
   }
 ]
