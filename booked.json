@@ -76,5 +76,17 @@
     "time": "12:30",
     "line_name": "Minya",
     "phone_last3": "992"
+  },
+  {
+    "date": "2025/11/15 (六)",
+    "time": "11:30",
+    "line_name": "Kpt",
+    "phone_last3": "377"
+  },
+  {
+    "date": "2025/12/07 (日)",
+    "time": "12:30",
+    "line_name": "阿文",
+    "phone_last3": "991"
   }
 ]
