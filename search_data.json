@@ -331,14 +331,5 @@
     "phone": "0925260779",
     "people": "大人:8 / 小孩:0",
     "note": ""
-  },
-  {
-    "date": "用餐日期",
-    "time": "用餐時段",
-    "display_name": "訂位大名",
-    "line_name": "LINE社群ID",
-    "phone": "電話",
-    "people": "人數",
-    "note": "備註"
   }
 ]
