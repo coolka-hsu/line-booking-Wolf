@@ -1,1 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>訂位紀錄日曆</title>
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #2c3e50;
+    }
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .entry {
+      background-color: #ffffff;
+      border-left: 5px solid #4CAF50;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .entry strong {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .entry .meta {
+      font-size: 0.95rem;
+      color: #555;
+      margin-top: 0.25rem;
+    }
+    .link-area {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+    }
+    .link-area a {
+      color: #1e88e5;
+      text-decoration: none;
+    }
+    .link-area a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>📅 訂位紀錄日曆</h1>
+  <h3>訂位資訊每三分鐘更新一次</h3>
+  <div class="link-area">
+    🔍 <a href="search.html" target="_blank">查詢我的訂位</a>
+  </div>
 
+  <div class="calendar" id="calendar"></div>
+
+<script type="module">
+  // === 1️⃣ Supabase 初始化 ===
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+  // 你的 Supabase 專案設定
+  const SUPABASE_URL = 'https://tqxkicmuqbdtjwydasov.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxeGtpY211cWJkdGp3eWRhc292Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMzMzk3NjksImV4cCI6MjA2ODkxNTc2OX0.rL2lnqxXy2nOrki1s40K0VkeClRLfiJwMKD33QjFUJg';
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // === 2️⃣ 載入資料 ===
+  async function loadBookedData() {
+    const calendar = document.getElementById("calendar");
+    calendar.innerHTML = "<p>資料載入中...</p>";
+
+    // 從 Supabase 取得所有訂位資料
+    const { data, error } = await supabase
+      .from('bookings')
+      .select('date, time, line_name, phone_last3')
+      .order('date', { ascending: true })
+      .order('time', { ascending: true });
+
+    if (error) {
+      console.error('讀取資料錯誤：', error);
+      calendar.innerHTML = "<p>⚠️ 無法載入資料，請稍後再試。</p>";
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      calendar.innerHTML = "<p>目前尚無任何訂位資料。</p>";
+      return;
+    }
+
+    // === 3️⃣ 清空 & 渲染 ===
+    calendar.innerHTML = "";
+    data.forEach(entry => {
+      const div = document.createElement("div");
+      div.className = "entry";
+      div.innerHTML = `
+        <strong>📆 ${entry.date} ${entry.time}</strong>
+        <div class="meta">🙍‍♂️ ${entry.line_name || '未提供'}</div>
+        <div class="meta">📱 手機尾碼：${entry.phone_last3 || '---'}</div>
+      `;
+      calendar.appendChild(div);
+    });
+  }
+
+  // === 4️⃣ 執行 ===
+  loadBookedData();
+</script>
+
+</body>
+</html>
