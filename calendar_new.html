@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>訂位紀錄日曆</title>
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    h1 { font-size: 2rem; color: #2c3e50; }
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .entry {
+      background-color: #ffffff;
+      border-left: 5px solid #4CAF50;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .entry strong { display: block; margin-bottom: 0.5rem; }
+    .entry .meta { font-size: 0.95rem; color: #555; margin-top: 0.25rem; }
+    .link-area { margin-top: 0.5rem; font-size: 1.05rem; }
+    .link-area a { color: #1e88e5; text-decoration: none; }
+    .link-area a:hover { text-decoration: underline; }
+    .bar {
+      display:flex; align-items:center; gap:.75rem; margin-bottom:.5rem; color:#555;
+    }
+    .badge { font-size:.8rem; background:#e8f5e9; color:#2e7d32; padding:.2rem .5rem; border-radius:999px; }
+    .muted { color:#777; font-size:.9rem; }
+  </style>
+</head>
+<body>
+  <h1>📅 訂位紀錄日曆</h1>
+
+  <div class="bar">
+    <span class="badge">每 3 分鐘自動更新</span>
+    <span class="muted" id="lastUpdated"></span>
+  </div>
+
+  <div class="link-area">
+    🔍 <a href="search.html" target="_blank" rel="noopener">查詢我的訂位</a>
+  </div>
+
+  <div class="calendar" id="calendar"></div>
+
+  <script>
+    // ======= 需修改：填入你的 GAS Web App URL 與 SECRET_KEY =======
+    const API_BASE = 'https://script.google.com/macros/s/AKfycbxDr9BUqRWd3mpoboTbq0r0U2hTXXGgPHGuWnkiM3bct70dGBeqbD6HhpKRH-93EK2CxQ/exec'; // ← 改成你的
+    const SECRET   = '32k_linda78787878dannyGood88888'; // ← 改成你的 Script Properties：SECRET_KEY
+    // ============================================================
+
+    const REFRESH_MS = 3 * 60 * 1000; // 每 3 分鐘更新
+    const calendarEl = document.getElementById('calendar');
+    const lastUpdatedEl = document.getElementById('lastUpdated');
+
+    // 將 "2025/04/24" + "05:21" 轉為可排序的 ISO
+    function toSortableDateTime(dateStr, timeStr) {
+      // date 可能為 yyyy/MM/dd；轉 yyyy-MM-ddTHH:mm
+      const [y, m, d] = String(dateStr).split(/[\/\-\.]/).map(s => s.padStart(2,'0'));
+      const [hh = '00', mm = '00'] = String(timeStr || '').split(':').map(s => s.padStart(2,'0'));
+      // 以本地時區建 Date（避免 UTC 偏移）
+      return new Date(`${y}-${m}-${d}T${hh}:${mm}:00`);
+    }
+
+    function renderBooked(data) {
+      calendarEl.innerHTML = '';
+      if (!Array.isArray(data) || data.length === 0) {
+        calendarEl.innerHTML = "<p>目前尚無任何訂位資料。</p>";
+        return;
+      }
+
+      // 依日期時間排序
+      data.sort((a, b) => {
+        const A = toSortableDateTime(a.date, a.time).getTime();
+        const B = toSortableDateTime(b.date, b.time).getTime();
+        return A - B;
+      });
+
+      // 繪製
+      for (const entry of data) {
+        const div = document.createElement('div');
+        div.className = 'entry';
+        div.innerHTML = `
+          <strong>📆 ${entry.date || ''} ${entry.time || ''}</strong>
+          <div class="meta">🙍‍♂️ ${entry.line_name || '未提供'}</div>
+          <div class="meta">📱 手機尾碼：${entry.phone_last3 || '---'}</div>
+        `;
+        calendarEl.appendChild(div);
+      }
+    }
+
+    async function loadBookedData() {
+      try {
+        // 新資料來源：GAS（type=booked），需帶 key
+        const url = `${API_BASE}?type=booked&key=${encodeURIComponent(SECRET)}`;
+        const res = await fetch(url, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+
+        // 從 { data: [...] } 取出陣列
+        const list = Array.isArray(json?.data) ? json.data : [];
+        renderBooked(list);
+
+        const now = new Date();
+        lastUpdatedEl.textContent = `最後更新：${now.toLocaleString()}`;
+      } catch (err) {
+        console.error('載入訂位資料失敗：', err);
+        calendarEl.innerHTML = `<p>⚠️ 無法載入訂位資料，請稍後再試。</p>`;
+      }
+    }
+
+    // 立即載入 & 每 3 分鐘刷新
+    loadBookedData();
+    setInterval(loadBookedData, REFRESH_MS);
+  </script>
+</body>
+</html>
