@@ -74,39 +74,36 @@
     const calendar = document.getElementById("calendar");
     calendar.innerHTML = "<p>資料載入中...</p>";
 
-    // 從 Supabase 取得所有訂位資料
+    // 這裡：顯示用拿 date_text/time_text；排序用 date_iso/time_sort
     const { data, error } = await supabase
       .from('bookings')
-      .select('date, time, line_name, phone_last3')
-      .order('date', { ascending: true })
-      .order('time', { ascending: true });
+      .select('date_text, time_text, line_name, phone_last3, date_iso, time_sort')
+      .order('date_iso', { ascending: true })
+      .order('time_sort', { ascending: true });
 
     if (error) {
-      console.error('讀取資料錯誤：', error);
+      console.error(error);
       calendar.innerHTML = "<p>⚠️ 無法載入資料，請稍後再試。</p>";
       return;
     }
-
     if (!data || data.length === 0) {
       calendar.innerHTML = "<p>目前尚無任何訂位資料。</p>";
       return;
     }
 
-    // === 3️⃣ 清空 & 渲染 ===
     calendar.innerHTML = "";
-    data.forEach(entry => {
+    for (const entry of data) {
       const div = document.createElement("div");
       div.className = "entry";
       div.innerHTML = `
-        <strong>📆 ${entry.date} ${entry.time}</strong>
+        <strong>📆 ${entry.date_text || ''} ${entry.time_text || ''}</strong>
         <div class="meta">🙍‍♂️ ${entry.line_name || '未提供'}</div>
         <div class="meta">📱 手機尾碼：${entry.phone_last3 || '---'}</div>
       `;
       calendar.appendChild(div);
-    });
+    }
   }
 
-  // === 4️⃣ 執行 ===
   loadBookedData();
 </script>
 
