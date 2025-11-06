@@ -42,18 +42,6 @@
     "phone_last3": "104"
   },
   {
-    "date": "2025/11/09 (日)",
-    "time": "12:30",
-    "line_name": "Jack CF",
-    "phone_last3": "場訂位"
-  },
-  {
-    "date": "2025/11/09 (日)",
-    "time": "11:30",
-    "line_name": "瀚",
-    "phone_last3": "180"
-  },
-  {
     "date": "2025/11/15 (六)",
     "time": "11:30",
     "line_name": "Kpt",
@@ -80,8 +68,8 @@
   {
     "date": "2025/11/22 (六)",
     "time": "11:30",
-    "line_name": "Kiki",
-    "phone_last3": "493"
+    "line_name": "棻棻",
+    "phone_last3": "場訂位"
   },
   {
     "date": "2025/11/23 (日)",
@@ -98,8 +86,8 @@
   {
     "date": "2025/11/29 (六)",
     "time": "12:30",
-    "line_name": "棻棻",
-    "phone_last3": "場訂位"
+    "line_name": "Kiki",
+    "phone_last3": "493"
   },
   {
     "date": "2025/11/30 (日)",
@@ -222,21 +210,9 @@
     "phone_last3": "069"
   },
   {
-    "date": "2025/04/24測試時間",
-    "time": "5:20",
-    "line_name": "酷卡太太",
-    "phone_last3": "991"
-  },
-  {
-    "date": "2025/04/24測試時間",
-    "time": "5:25",
-    "line_name": "酷卡六六",
-    "phone_last3": "991"
-  },
-  {
-    "date": "2025/04/24測試時間",
-    "time": "05:30",
-    "line_name": "徐二寶",
-    "phone_last3": "991"
+    "date": "2025/11/09 (日)",
+    "time": "12:30",
+    "line_name": "閃亮亮",
+    "phone_last3": "312"
   }
 ]
