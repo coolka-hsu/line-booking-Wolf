@@ -18,15 +18,6 @@
     "note": ""
   },
   {
-    "date": "2026/1/11 (日)",
-    "time": "11:30",
-    "display_name": "鄭俊民",
-    "line_name": "鄭俊民",
-    "phone": "漢堡機車團",
-    "people": "大人:23 / 小孩:0",
-    "note": ""
-  },
-  {
     "date": "2026/1/17 (六)",
     "time": "11:30",
     "display_name": "混種金剛",
@@ -342,15 +333,6 @@
     "note": ""
   },
   {
-    "date": "2025/12/01",
-    "time": "11:30",
-    "display_name": "Ej",
-    "line_name": "Ejchu",
-    "phone": "0921212991",
-    "people": "大人:6 / 小孩:0",
-    "note": ""
-  },
-  {
     "date": "2026/1/24 (六)",
     "time": "12:30",
     "display_name": "許博恆",
@@ -555,6 +537,15 @@
     "line_name": "葉子",
     "phone": "0937008130",
     "people": "大人:10 / 小孩:0",
+    "note": ""
+  },
+  {
+    "date": "2026/2/21 (六)",
+    "time": "11:30",
+    "display_name": "林小茉",
+    "line_name": "Lin_",
+    "phone": "0981762528",
+    "people": "大人:5 / 小孩:0",
     "note": ""
   }
 ]
