@@ -234,12 +234,6 @@
     "phone_last3": "991"
   },
   {
-    "date": "2026/2/21 (六)",
-    "time": "11:30",
-    "line_name": "Kpt",
-    "phone_last3": "377"
-  },
-  {
     "date": "2026/1/24 (六)",
     "time": "12:30",
     "line_name": "博恆",
@@ -312,12 +306,6 @@
     "phone_last3": "111"
   },
   {
-    "date": "2026/1/18 (日)",
-    "time": "11:30",
-    "line_name": "Kpt",
-    "phone_last3": "377"
-  },
-  {
     "date": "2026/2/28 (六)",
     "time": "12:30",
     "line_name": "豆花",
@@ -376,5 +364,11 @@
     "time": "11:30",
     "line_name": "Billychen",
     "phone_last3": "210"
+  },
+  {
+    "date": "2026/1/18 (日)",
+    "time": "11:30",
+    "line_name": "葉子",
+    "phone_last3": "130"
   }
 ]
