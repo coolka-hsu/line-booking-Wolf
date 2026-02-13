@@ -376,5 +376,17 @@
     "time": "12:30",
     "line_name": "煌",
     "phone_last3": "712"
+  },
+  {
+    "date": "2026/3/29 (日)",
+    "time": "12:30",
+    "line_name": "Coin",
+    "phone_last3": "580"
+  },
+  {
+    "date": "2026/3/28 (六)",
+    "time": "11:30",
+    "line_name": "Coin",
+    "phone_last3": "580"
   }
 ]
