@@ -378,18 +378,6 @@
     "phone_last3": "712"
   },
   {
-    "date": "2026/3/29 (日)",
-    "time": "12:30",
-    "line_name": "Coin",
-    "phone_last3": "580"
-  },
-  {
-    "date": "2026/3/28 (六)",
-    "time": "11:30",
-    "line_name": "Coin",
-    "phone_last3": "580"
-  },
-  {
     "date": "2026/3/15 (日)",
     "time": "12:30",
     "line_name": "陳紀合",
@@ -412,5 +400,11 @@
     "time": "11:30",
     "line_name": "狼來了",
     "phone_last3": "099"
+  },
+  {
+    "date": "2026/3/28 (六)",
+    "time": "11:30",
+    "line_name": "WW",
+    "phone_last3": "227"
   }
 ]
