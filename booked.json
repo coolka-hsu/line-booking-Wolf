@@ -434,7 +434,7 @@
   {
     "date": "2026/4/6 (一)",
     "time": "11:30",
-    "line_name": "Billychen",
+    "line_name": "比利",
     "phone_last3": "210"
   },
   {
@@ -442,12 +442,6 @@
     "time": "12:30",
     "line_name": "Coin",
     "phone_last3": "580"
-  },
-  {
-    "date": "2026/4/6 (一)",
-    "time": "12:30",
-    "line_name": "Billychen",
-    "phone_last3": "210"
   },
   {
     "date": "2026/4/11 (六)",
@@ -478,5 +472,11 @@
     "time": "11:30",
     "line_name": "馮",
     "phone_last3": "104"
+  },
+  {
+    "date": "2026/4/6 (一)",
+    "time": "12:30",
+    "line_name": "葉子",
+    "phone_last3": "130"
   }
 ]
