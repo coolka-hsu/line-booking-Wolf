@@ -651,7 +651,7 @@
     "date": "2026/4/6 (一)",
     "time": "11:30",
     "display_name": "陳信宏",
-    "line_name": "Billychen",
+    "line_name": "比利",
     "phone": "0937788210",
     "people": "大人:2 / 小孩:0",
     "note": ""
@@ -664,15 +664,6 @@
     "phone": "0915539580",
     "people": "大人:8 / 小孩:2",
     "note": "7歲以下"
-  },
-  {
-    "date": "2026/4/6 (一)",
-    "time": "12:30",
-    "display_name": "陳信宏",
-    "line_name": "Billychen",
-    "phone": "0937788210",
-    "people": "大人:2 / 小孩:0",
-    "note": ""
   },
   {
     "date": "2026/4/11 (六)",
@@ -717,6 +708,15 @@
     "line_name": "馮",
     "phone": "0910811104",
     "people": "大人:2 / 小孩:0",
+    "note": ""
+  },
+  {
+    "date": "2026/4/6 (一)",
+    "time": "12:30",
+    "display_name": "葉碧富",
+    "line_name": "葉子",
+    "phone": "0937008130",
+    "people": "大人:9 / 小孩:0",
     "note": ""
   }
 ]
