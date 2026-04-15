@@ -678,12 +678,6 @@
     "phone_last3": "317"
   },
   {
-    "date": "2026/6/22 (一)",
-    "time": "11:30",
-    "line_name": "mamie100",
-    "phone_last3": "140"
-  },
-  {
     "date": "2026/5/10 (日)",
     "time": "12:30",
     "line_name": "Irene Chen",
@@ -694,5 +688,11 @@
     "time": "12:30",
     "line_name": "Lisa",
     "phone_last3": "140"
+  },
+  {
+    "date": "2026/6/22 (一)",
+    "time": "11:30",
+    "line_name": "葉子",
+    "phone_last3": "130"
   }
 ]
