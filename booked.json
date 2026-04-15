@@ -544,5 +544,23 @@
     "time": "12:30",
     "line_name": "Kelly",
     "phone_last3": "258"
+  },
+  {
+    "date": "2026/6/6 (六)",
+    "time": "11:30",
+    "line_name": "貝",
+    "phone_last3": "204"
+  },
+  {
+    "date": "2026/6/22 (一)",
+    "time": "12:30",
+    "line_name": "Jenny",
+    "phone_last3": "093"
+  },
+  {
+    "date": "2026/5/10 (日)",
+    "time": "12:30",
+    "line_name": "Kay 00",
+    "phone_last3": "632"
   }
 ]
