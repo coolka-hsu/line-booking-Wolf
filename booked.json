@@ -522,12 +522,6 @@
     "phone_last3": "368"
   },
   {
-    "date": "2026/5/25 (一)",
-    "time": "11:30",
-    "line_name": "Jenny",
-    "phone_last3": "093"
-  },
-  {
     "date": "2026/6/27 (六)",
     "time": "11:30",
     "line_name": "U",
@@ -546,12 +540,6 @@
     "phone_last3": "204"
   },
   {
-    "date": "2026/6/22 (一)",
-    "time": "12:30",
-    "line_name": "Jenny",
-    "phone_last3": "093"
-  },
-  {
     "date": "2026/5/10 (日)",
     "time": "12:30",
     "line_name": "Kay 00",
@@ -562,12 +550,6 @@
     "time": "11:30",
     "line_name": "莫力",
     "phone_last3": "358"
-  },
-  {
-    "date": "2026/6/21 (日)",
-    "time": "11:30",
-    "line_name": "Jenny",
-    "phone_last3": "093"
   },
   {
     "date": "2026/5/23 (六)",
@@ -586,12 +568,6 @@
     "time": "12:30",
     "line_name": "安安狗狗",
     "phone_last3": "450"
-  },
-  {
-    "date": "2026/6/8 (一)",
-    "time": "12:30",
-    "line_name": "Jenny",
-    "phone_last3": "093"
   },
   {
     "date": "2026/5/30 (六)",
@@ -642,12 +618,6 @@
     "phone_last3": "632"
   },
   {
-    "date": "2026/6/22 (一)",
-    "time": "11:30",
-    "line_name": "Jenny",
-    "phone_last3": "093"
-  },
-  {
     "date": "2026/6/28 (日)",
     "time": "12:30",
     "line_name": "煌",
@@ -694,5 +664,11 @@
     "time": "11:30",
     "line_name": "Jenny Tsai",
     "phone_last3": "779"
+  },
+  {
+    "date": "2026/6/21 (日)",
+    "time": "11:30",
+    "line_name": "馮",
+    "phone_last3": "104"
   }
 ]
