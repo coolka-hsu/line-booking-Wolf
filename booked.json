@@ -540,12 +540,6 @@
     "phone_last3": "204"
   },
   {
-    "date": "2026/5/10 (日)",
-    "time": "12:30",
-    "line_name": "Kay 00",
-    "phone_last3": "632"
-  },
-  {
     "date": "2026/6/14 (日)",
     "time": "11:30",
     "line_name": "莫力",
@@ -612,12 +606,6 @@
     "phone_last3": "210"
   },
   {
-    "date": "2026/6/27 (六)",
-    "time": "12:30",
-    "line_name": "Kay 00",
-    "phone_last3": "632"
-  },
-  {
     "date": "2026/6/28 (日)",
     "time": "12:30",
     "line_name": "煌",
@@ -626,7 +614,7 @@
   {
     "date": "2026/6/14 (日)",
     "time": "12:30",
-    "line_name": "Kay 00",
+    "line_name": "Kay0",
     "phone_last3": "632"
   },
   {
@@ -694,5 +682,11 @@
     "time": "11:30",
     "line_name": "mamie100",
     "phone_last3": "140"
+  },
+  {
+    "date": "2026/5/10 (日)",
+    "time": "12:30",
+    "line_name": "Irene Chen",
+    "phone_last3": "337"
   }
 ]
