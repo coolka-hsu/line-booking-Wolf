@@ -534,12 +534,6 @@
     "phone_last3": "688"
   },
   {
-    "date": "2026/5/17 (日)",
-    "time": "12:30",
-    "line_name": "呂小姐",
-    "phone_last3": "987"
-  },
-  {
     "date": "2026/6/20 (六)",
     "time": "12:30",
     "line_name": "Kelly",
@@ -604,12 +598,6 @@
     "time": "11:30",
     "line_name": "黃庭",
     "phone_last3": "291"
-  },
-  {
-    "date": "2026/6/28 (日)",
-    "time": "11:30",
-    "line_name": "呂小姐",
-    "phone_last3": "987"
   },
   {
     "date": "2026/6/7 (日)",
@@ -694,5 +682,11 @@
     "time": "11:30",
     "line_name": "Lin",
     "phone_last3": "528"
+  },
+  {
+    "date": "2026/5/17 (日)",
+    "time": "12:30",
+    "line_name": "M3",
+    "phone_last3": "513"
   }
 ]
