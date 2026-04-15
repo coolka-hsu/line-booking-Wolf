@@ -868,7 +868,7 @@
     "time": "12:30",
     "display_name": "温千慧",
     "line_name": "WEN WEN",
-    "phone": "0933520882",
+    "phone": "0963520882",
     "people": "大人:2 / 小孩:0",
     "note": ""
   },
@@ -972,15 +972,6 @@
     "note": ""
   },
   {
-    "date": "2026/5/3 (日)",
-    "time": "11:30",
-    "display_name": "林小茉",
-    "line_name": "Lin",
-    "phone": "0981762528",
-    "people": "大人:2 / 小孩:0",
-    "note": ""
-  },
-  {
     "date": "2026/5/17 (日)",
     "time": "12:30",
     "display_name": "王淑華",
@@ -1014,6 +1005,15 @@
     "line_name": "Irene Chen",
     "phone": "0968234337",
     "people": "大人:4 / 小孩:0",
+    "note": ""
+  },
+  {
+    "date": "2026/5/3 (日)",
+    "time": "11:30",
+    "display_name": "陳柏佑",
+    "line_name": "文森",
+    "phone": "0972500700",
+    "people": "大人:10 / 小孩:0",
     "note": ""
   }
 ]
