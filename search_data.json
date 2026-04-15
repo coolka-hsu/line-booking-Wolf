@@ -810,15 +810,6 @@
     "note": ""
   },
   {
-    "date": "2026/5/10 (日)",
-    "time": "12:30",
-    "display_name": "黃雅玲",
-    "line_name": "Kay 00",
-    "phone": "0963712632",
-    "people": "大人:4 / 小孩:0",
-    "note": ""
-  },
-  {
     "date": "2026/6/14 (日)",
     "time": "11:30",
     "display_name": "閻永安",
@@ -918,15 +909,6 @@
     "note": ""
   },
   {
-    "date": "2026/6/27 (六)",
-    "time": "12:30",
-    "display_name": "黃雅玲",
-    "line_name": "Kay 00",
-    "phone": "0963712632",
-    "people": "大人:4 / 小孩:0",
-    "note": ""
-  },
-  {
     "date": "2026/6/28 (日)",
     "time": "12:30",
     "display_name": "張君煌",
@@ -939,7 +921,7 @@
     "date": "2026/6/14 (日)",
     "time": "12:30",
     "display_name": "黃雅玲",
-    "line_name": "Kay 00",
+    "line_name": "Kay0",
     "phone": "0963712632",
     "people": "大人:4 / 小孩:0",
     "note": ""
@@ -1041,6 +1023,15 @@
     "line_name": "mamie100",
     "phone": "0988835140",
     "people": "大人:2 / 小孩:0",
+    "note": ""
+  },
+  {
+    "date": "2026/5/10 (日)",
+    "time": "12:30",
+    "display_name": "陳愛蓁",
+    "line_name": "Irene Chen",
+    "phone": "0968234337",
+    "people": "大人:4 / 小孩:0",
     "note": ""
   }
 ]
