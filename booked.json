@@ -532,5 +532,17 @@
     "time": "11:30",
     "line_name": "U",
     "phone_last3": "688"
+  },
+  {
+    "date": "2026/5/17 (日)",
+    "time": "12:30",
+    "line_name": "呂小姐",
+    "phone_last3": "987"
+  },
+  {
+    "date": "2026/6/20 (六)",
+    "time": "12:30",
+    "line_name": "Kelly",
+    "phone_last3": "258"
   }
 ]
