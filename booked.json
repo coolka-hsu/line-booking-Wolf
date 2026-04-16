@@ -648,12 +648,6 @@
     "phone_last3": "104"
   },
   {
-    "date": "2026/6/8 (一)",
-    "time": "12:30",
-    "line_name": "Irene Chen",
-    "phone_last3": "337"
-  },
-  {
     "date": "2026/5/3 (日)",
     "time": "11:30",
     "line_name": "文森",
@@ -694,5 +688,11 @@
     "time": "11:30",
     "line_name": "葉子",
     "phone_last3": "130"
+  },
+  {
+    "date": "2026/6/8 (一)",
+    "time": "12:30",
+    "line_name": "Sean(魚鷹）",
+    "phone_last3": "637"
   }
 ]
