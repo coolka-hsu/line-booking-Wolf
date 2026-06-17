@@ -774,22 +774,10 @@
     "phone_last3": "899"
   },
   {
-    "date": "2026/7/26 (日)",
-    "time": "12:30",
-    "line_name": "枝",
-    "phone_last3": "583"
-  },
-  {
     "date": "2026/8/9 (日)",
     "time": "12:30",
     "line_name": "煌",
     "phone_last3": "712"
-  },
-  {
-    "date": "2026/7/26 (日)",
-    "time": "11:30",
-    "line_name": "bvb1221",
-    "phone_last3": "220"
   },
   {
     "date": "2026/8/15 (六)",
@@ -802,12 +790,6 @@
     "time": "12:30",
     "line_name": "Tzu",
     "phone_last3": "966"
-  },
-  {
-    "date": "2026/7/4 (六)",
-    "time": "12:30",
-    "line_name": "bvb1221",
-    "phone_last3": "220"
   },
   {
     "date": "2026/8/1 (六)",
@@ -874,5 +856,11 @@
     "time": "12:30",
     "line_name": "雅雲",
     "phone_last3": "687"
+  },
+  {
+    "date": "2026/7/26 (日)",
+    "time": "12:30",
+    "line_name": "瀚",
+    "phone_last3": "180"
   }
 ]
