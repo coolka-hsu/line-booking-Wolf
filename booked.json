@@ -552,12 +552,6 @@
     "phone_last3": "712"
   },
   {
-    "date": "2026/6/21 (日)",
-    "time": "12:30",
-    "line_name": "Actrader",
-    "phone_last3": "437"
-  },
-  {
     "date": "2026/5/24 (日)",
     "time": "12:30",
     "line_name": "安安狗狗",
@@ -694,5 +688,11 @@
     "time": "12:30",
     "line_name": "Sean(魚鷹）",
     "phone_last3": "637"
+  },
+  {
+    "date": "2026/8/1 (六)",
+    "time": "11:30",
+    "line_name": "阿翎",
+    "phone_last3": "716"
   }
 ]
