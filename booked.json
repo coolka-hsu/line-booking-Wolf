@@ -754,5 +754,17 @@
     "time": "11:30",
     "line_name": "阿文",
     "phone_last3": "991"
+  },
+  {
+    "date": "2026/7/5 (日)",
+    "time": "12:30",
+    "line_name": "bvb1221",
+    "phone_last3": "220"
+  },
+  {
+    "date": "2026/7/18 (六)",
+    "time": "12:30",
+    "line_name": "雅嫻",
+    "phone_last3": "216"
   }
 ]
