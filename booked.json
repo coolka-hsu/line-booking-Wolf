@@ -960,12 +960,6 @@
     "phone_last3": "677"
   },
   {
-    "date": "2026/10/18 (日)",
-    "time": "12:30",
-    "line_name": "小周",
-    "phone_last3": "515"
-  },
-  {
     "date": "2026/10/31 (六)",
     "time": "12:30",
     "line_name": "邦",
@@ -990,12 +984,6 @@
     "phone_last3": "413"
   },
   {
-    "date": "2026/10/11 (日)",
-    "time": "12:30",
-    "line_name": "小周",
-    "phone_last3": "515"
-  },
-  {
     "date": "2026/10/10 (六)",
     "time": "11:30",
     "line_name": "arlen",
@@ -1012,5 +1000,11 @@
     "time": "11:30",
     "line_name": "邦",
     "phone_last3": "517"
+  },
+  {
+    "date": "2026/10/11 (日)",
+    "time": "12:30",
+    "line_name": "Bounz",
+    "phone_last3": "196"
   }
 ]
