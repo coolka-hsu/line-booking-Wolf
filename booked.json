@@ -984,12 +984,6 @@
     "phone_last3": "413"
   },
   {
-    "date": "2026/10/10 (六)",
-    "time": "11:30",
-    "line_name": "arlen",
-    "phone_last3": "889"
-  },
-  {
     "date": "2026/10/11 (日)",
     "time": "11:30",
     "line_name": "邦",
@@ -1012,5 +1006,11 @@
     "time": "12:30",
     "line_name": "魚魚",
     "phone_last3": "376"
+  },
+  {
+    "date": "2026/10/10 (六)",
+    "time": "11:30",
+    "line_name": "Mo",
+    "phone_last3": "637"
   }
 ]
