@@ -732,12 +732,6 @@
     "phone_last3": "185"
   },
   {
-    "date": "2026/7/19 (日)",
-    "time": "11:30",
-    "line_name": "Lin hui",
-    "phone_last3": "618"
-  },
-  {
     "date": "2026/8/2 (日)",
     "time": "11:30",
     "line_name": "新莊wendy",
@@ -816,12 +810,6 @@
     "phone_last3": "586"
   },
   {
-    "date": "2026/7/11 (六)",
-    "time": "12:30",
-    "line_name": "林雅嫻",
-    "phone_last3": "216"
-  },
-  {
     "date": "2026/7/12 (日)",
     "time": "12:30",
     "line_name": "芳（東宇）",
@@ -834,10 +822,10 @@
     "phone_last3": "700"
   },
   {
-    "date": "2026/8/16 (日)",
+    "date": "2026/7/11 (六)",
     "time": "12:30",
-    "line_name": "林雅嫻",
-    "phone_last3": "216"
+    "line_name": "Lin",
+    "phone_last3": "677"
   },
   {
     "date": "2026/8/29 (六)",
@@ -866,7 +854,7 @@
   {
     "date": "2026/8/22 (六)",
     "time": "11:30",
-    "line_name": 917711559,
+    "line_name": "雯",
     "phone_last3": "559"
   },
   {
@@ -892,5 +880,11 @@
     "time": "12:30",
     "line_name": "大寶",
     "phone_last3": "266"
+  },
+  {
+    "date": "2026/9/12 (六)",
+    "time": "12:30",
+    "line_name": "Goat",
+    "phone_last3": "178"
   }
 ]
