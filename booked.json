@@ -982,5 +982,17 @@
     "time": "12:30",
     "line_name": "Goat",
     "phone_last3": "178"
+  },
+  {
+    "date": "2026/10/3 (六)",
+    "time": "11:30",
+    "line_name": "Jia",
+    "phone_last3": "106"
+  },
+  {
+    "date": "2026/10/4 (日)",
+    "time": "11:30",
+    "line_name": "oga",
+    "phone_last3": "413"
   }
 ]
