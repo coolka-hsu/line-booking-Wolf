@@ -910,5 +910,17 @@
     "time": "11:30",
     "line_name": "傑瑞",
     "phone_last3": "979"
+  },
+  {
+    "date": "2026/10/25 (日)",
+    "time": "11:30",
+    "line_name": "Fen",
+    "phone_last3": "330"
+  },
+  {
+    "date": "2026/10/4 (日)",
+    "time": "12:30",
+    "line_name": "小飛",
+    "phone_last3": "329"
   }
 ]
