@@ -882,88 +882,10 @@
     "phone_last3": "266"
   },
   {
-    "date": "2026/9/12 (六)",
-    "time": "12:30",
-    "line_name": "Goat",
-    "phone_last3": "178"
-  },
-  {
-    "date": "2026/10/3 (六)",
-    "time": "12:30",
-    "line_name": "雯",
-    "phone_last3": "559"
-  },
-  {
-    "date": "2026/10/24 (六)",
-    "time": "11:30",
-    "line_name": "煌",
-    "phone_last3": "712"
-  },
-  {
     "date": "2026/9/6 (日)",
     "time": "11:30",
     "line_name": "傑瑞",
     "phone_last3": "979"
-  },
-  {
-    "date": "2026/10/25 (日)",
-    "time": "11:30",
-    "line_name": "Fen",
-    "phone_last3": "330"
-  },
-  {
-    "date": "2026/10/4 (日)",
-    "time": "12:30",
-    "line_name": "小飛",
-    "phone_last3": "329"
-  },
-  {
-    "date": "2026/10/18 (六)",
-    "time": "12:30",
-    "line_name": "小周",
-    "phone_last3": "515"
-  },
-  {
-    "date": "2026/10/24 (六)",
-    "time": "12:30",
-    "line_name": "Chu",
-    "phone_last3": "143"
-  },
-  {
-    "date": "2026/10/25 (日)",
-    "time": "12:30",
-    "line_name": "阿嬤",
-    "phone_last3": "124"
-  },
-  {
-    "date": "2026/10/31 (六)",
-    "time": "11:30",
-    "line_name": "teyang28",
-    "phone_last3": "738"
-  },
-  {
-    "date": "2026/10/17 (六)",
-    "time": "11:30",
-    "line_name": "俺有醉",
-    "phone_last3": "986"
-  },
-  {
-    "date": "2026/10/18 (日)",
-    "time": "11:30",
-    "line_name": "宣",
-    "phone_last3": "669"
-  },
-  {
-    "date": "2026/9/13 (日)",
-    "time": "12:30",
-    "line_name": "Lin",
-    "phone_last3": "677"
-  },
-  {
-    "date": "2026/10/31 (六)",
-    "time": "12:30",
-    "line_name": "邦",
-    "phone_last3": "517"
   },
   {
     "date": "2026/9/5 (六)",
@@ -972,16 +894,94 @@
     "phone_last3": "178"
   },
   {
-    "date": "2026/10/3 (六)",
-    "time": "11:30",
-    "line_name": "Jia",
-    "phone_last3": "106"
+    "date": "2026/9/13 (日)",
+    "time": "12:30",
+    "line_name": "Lin",
+    "phone_last3": "677"
+  },
+  {
+    "date": "2026/10/4 (日)",
+    "time": "12:30",
+    "line_name": "小飛",
+    "phone_last3": "329"
   },
   {
     "date": "2026/10/4 (日)",
     "time": "11:30",
     "line_name": "oga",
     "phone_last3": "413"
+  },
+  {
+    "date": "2026/10/31 (六)",
+    "time": "11:30",
+    "line_name": "teyang28",
+    "phone_last3": "738"
+  },
+  {
+    "date": "2026/10/31 (六)",
+    "time": "12:30",
+    "line_name": "邦",
+    "phone_last3": "517"
+  },
+  {
+    "date": "2026/10/3 (六)",
+    "time": "12:30",
+    "line_name": "雯",
+    "phone_last3": "559"
+  },
+  {
+    "date": "2026/10/3 (六)",
+    "time": "11:30",
+    "line_name": "Jia",
+    "phone_last3": "106"
+  },
+  {
+    "date": "2026/10/25 (日)",
+    "time": "11:30",
+    "line_name": "Fen",
+    "phone_last3": "330"
+  },
+  {
+    "date": "2026/10/25 (日)",
+    "time": "12:30",
+    "line_name": "阿嬤",
+    "phone_last3": "124"
+  },
+  {
+    "date": "2026/10/24 (六)",
+    "time": "11:30",
+    "line_name": "煌",
+    "phone_last3": "712"
+  },
+  {
+    "date": "2026/10/24 (六)",
+    "time": "12:30",
+    "line_name": "Chu",
+    "phone_last3": "143"
+  },
+  {
+    "date": "2026/10/18 (日)",
+    "time": "11:30",
+    "line_name": "宣",
+    "phone_last3": "669"
+  },
+  {
+    "date": "2026/10/18 (六)",
+    "time": "12:30",
+    "line_name": "小周",
+    "phone_last3": "515"
+  },
+  {
+    "date": "2026/10/17 (六)",
+    "time": "11:30",
+    "line_name": "俺有醉",
+    "phone_last3": "986"
+  },
+  {
+    "date": "2026/10/17 (六)",
+    "time": "12:30",
+    "line_name": "魚魚",
+    "phone_last3": "376"
   },
   {
     "date": "2026/10/11 (日)",
@@ -996,12 +996,6 @@
     "phone_last3": "196"
   },
   {
-    "date": "2026/10/17 (六)",
-    "time": "12:30",
-    "line_name": "魚魚",
-    "phone_last3": "376"
-  },
-  {
     "date": "2026/10/10 (六)",
     "time": "11:30",
     "line_name": "Mo",
@@ -1012,5 +1006,11 @@
     "time": "12:30",
     "line_name": "雅雲",
     "phone_last3": "687"
+  },
+  {
+    "date": "2026/11/7 (六)",
+    "time": "11:30",
+    "line_name": "傑尼",
+    "phone_last3": "676"
   }
 ]
