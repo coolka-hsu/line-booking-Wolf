@@ -1018,5 +1018,29 @@
     "time": "12:30",
     "line_name": "Lin",
     "phone_last3": "677"
+  },
+  {
+    "date": "2026/11/21 (六)",
+    "time": "11:30",
+    "line_name": "林凡",
+    "phone_last3": "714"
+  },
+  {
+    "date": "2026/11/7 (六)",
+    "time": "12:30",
+    "line_name": "Lemmon",
+    "phone_last3": "724"
+  },
+  {
+    "date": "2026/10/31 (六)",
+    "time": "11:30",
+    "line_name": "Trender",
+    "phone_last3": "113"
+  },
+  {
+    "date": "2026/12/12 (六)",
+    "time": "12:30",
+    "line_name": "江",
+    "phone_last3": "967"
   }
 ]
