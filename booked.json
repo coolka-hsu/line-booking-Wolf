@@ -1026,12 +1026,6 @@
     "phone_last3": "714"
   },
   {
-    "date": "2026/11/7 (六)",
-    "time": "12:30",
-    "line_name": "Lemmon",
-    "phone_last3": "724"
-  },
-  {
     "date": "2026/10/31 (六)",
     "time": "11:30",
     "line_name": "Trender",
@@ -1192,5 +1186,11 @@
     "time": "11:30",
     "line_name": "Chu",
     "phone_last3": "143"
+  },
+  {
+    "date": "2026/11/7 (六)",
+    "time": "12:30",
+    "line_name": "yvonne",
+    "phone_last3": "415"
   }
 ]
