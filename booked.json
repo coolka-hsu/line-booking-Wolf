@@ -1140,12 +1140,6 @@
     "phone_last3": "714"
   },
   {
-    "date": "2026/11/1 (日)",
-    "time": "11:30",
-    "line_name": "劉小帥",
-    "phone_last3": "708"
-  },
-  {
     "date": "2026/12/13 (日)",
     "time": "11:30",
     "line_name": "Anne",
@@ -1200,9 +1194,9 @@
     "phone_last3": "934"
   },
   {
-    "date": "2026/11/28 (六)",
-    "time": "12:30",
-    "line_name": "Joycehan",
-    "phone_last3": "788"
+    "date": "2026/11/1 (日)",
+    "time": "11:30",
+    "line_name": "MH",
+    "phone_last3": "020"
   }
 ]
