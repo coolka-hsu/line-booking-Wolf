@@ -1096,5 +1096,17 @@
     "time": "11:30",
     "line_name": "han",
     "phone_last3": "668"
+  },
+  {
+    "date": "2026/11/15 (日)",
+    "time": "11:30",
+    "line_name": "Anne",
+    "phone_last3": "772"
+  },
+  {
+    "date": "2026/12/5 (六)",
+    "time": "12:30",
+    "line_name": "陳明翔",
+    "phone_last3": "447"
   }
 ]
