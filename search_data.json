@@ -1629,15 +1629,6 @@
     "note": ""
   },
   {
-    "date": "2026/12/20 (日)",
-    "time": "12:30",
-    "display_name": "黎筱鈞",
-    "line_name": "鈞",
-    "phone": "0910321232",
-    "people": "大人:2 / 小孩:0",
-    "note": ""
-  },
-  {
     "date": "2026/12/12 (六)",
     "time": "11:30",
     "display_name": "韓昭宇",
@@ -1715,7 +1706,7 @@
     "display_name": "Sunny",
     "line_name": "Sunny",
     "phone": "0970916034",
-    "people": "大人:2 / 小孩:0",
+    "people": "大人:10 / 小孩:0",
     "note": ""
   },
   {
@@ -1760,6 +1751,15 @@
     "display_name": "張雅雲",
     "line_name": "雅雲",
     "phone": "0927275687",
+    "people": "大人:6 / 小孩:0",
+    "note": ""
+  },
+  {
+    "date": "2026/12/20 (日)",
+    "time": "12:30",
+    "display_name": "張君煌",
+    "line_name": "煌",
+    "phone": "0922171712",
     "people": "大人:6 / 小孩:0",
     "note": ""
   }
