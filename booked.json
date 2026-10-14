@@ -1118,7 +1118,7 @@
   {
     "date": "2026/12/6 (日)",
     "time": "12:30",
-    "line_name": "Simon6857335",
+    "line_name": "小豪哥",
     "phone_last3": "757"
   },
   {
@@ -1138,12 +1138,6 @@
     "time": "12:30",
     "line_name": "林凡",
     "phone_last3": "714"
-  },
-  {
-    "date": "2026/12/13 (日)",
-    "time": "11:30",
-    "line_name": "Anne",
-    "phone_last3": "772"
   },
   {
     "date": "2026/12/6 (日)",
@@ -1196,7 +1190,13 @@
   {
     "date": "2026/11/1 (日)",
     "time": "11:30",
-    "line_name": "MH",
-    "phone_last3": "020"
+    "line_name": "MM",
+    "phone_last3": "820"
+  },
+  {
+    "date": "2026/12/13 (日)",
+    "time": "11:30",
+    "line_name": "NickLin🐈",
+    "phone_last3": "119"
   }
 ]
